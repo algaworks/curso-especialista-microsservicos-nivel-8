@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/blank}">
+
+<th:block layout:fragment="breadcrumb">
+
+</th:block>
+
+<th:block layout:fragment="content">
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12">
+<!--                    <h3 class="breadcrumb-header">My account</h3>-->
+                    <ul class="breadcrumb-tree">
+                        <li><a href="/">Home</a></li>
+                        <li class="active">My account</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /BREADCRUMB -->
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-7">
+                    <form th:action="@{/my-account}" method="post" th:object="${newCustomerForm}">
+                        <th:block th:insert="~{fragments/messages-by-type.html}"></th:block>
+                        <div th:if="${#fields.hasErrors()}" class="alert alert-danger" role="alert">
+                            There are errors in the form!
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <!-- Billing Details -->
+                        <div class="billing-details">
+                            <div class="section-title">
+                                <h3 class="title">Create your account</h3>
+                            </div>
+                            <div>
+                                <div class="form-group">
+                                    <input class="input" type="text" th:field="*{fullName}" th:errorclass="error" placeholder="Full name">
+                                </div>
+                                <div class="form-group">
+                                    <input class="input" type="email" th:field="*{email}" th:errorclass="error" placeholder="Email">
+                                </div>
+                                <div class="col-md-12 create-account-btn-holder">
+                                    <button type="submit" class="primary-btn order-submit">Create account</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Order Details -->
+                <div class="col-md-5 order-details">
+                    <div class="section-title text-center">
+                        <h3 class="title">Do you already have an account?</h3>
+                    </div><!--todo get clientname-->
+                    <a href="/login"
+                       class="primary-btn order-submit">Login</a>
+                </div>
+                <!-- /Order Details -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+</th:block>
+
+<th:block layout:fragment="javascript-extra">
+
+</th:block>
+
+</html>

@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="alert alert-info" role="alert" th:if="${infoMessage != null}" th:text="${infoMessage}"></div>
+<div class="alert alert-danger" role="alert" th:if="${errorMessage != null}" th:text="${errorMessage}"></div>
+<div class="alert alert-warning" role="alert" th:if="${warningMessage != null}" th:text="${warningMessage}"></div>
+</body>
+</html>

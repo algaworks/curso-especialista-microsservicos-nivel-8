@@ -1,0 +1,225 @@
+<div class="grid" style="margin-bottom: 0.5em;">
+    <div class="col-12">
+        <div class="aw-page-options-center">
+            <h1 class="aw-card-title">Product {{product?.id}}</h1>
+            <div class="p-toolbar-group-right">
+                <button pButton pRipple
+                        type="button" pTooltip="Back"
+                        tooltipPosition="bottom" routerLink="/products"
+                        icon="pi pi-arrow-left"
+                        class="aw-top-actions-button p-button-secondary p-button-text"></button>
+                <button pButton pRipple
+                        type="button" pTooltip="More options"
+                        tooltipPosition="bottom"
+                        (click)="menu.toggle($event)"
+                        icon="pi pi-ellipsis-h"
+                        class="aw-top-actions-button p-button-secondary p-button-text"></button>
+                <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 md:col-12 lg:col-12">
+        <p-card class="aw-card-no-padding">
+            <ng-template pTemplate="title">
+                <p-toolbar styleClass="aw-card-toolbar">
+                    <div class="p-toolbar-group-left">
+                        <div class="p-card-title ng-star-inserted aw-card-title">
+                            <ng-container *ngIf="loading">
+                                <p-skeleton width="15rem" height="2rem" styleClass="p-mb-2"></p-skeleton>
+                            </ng-container>
+                            <ng-container *ngIf="!loading">
+                                {{product?.name}}
+                            </ng-container>
+                        </div>
+                    </div>
+                </p-toolbar>
+            </ng-template>
+            <div class="aw-flex-card-body" *ngIf="!loading">
+                <div style="width: 340px;">
+                    <ul class="aw-card-label-group aw-card-label-group-md">
+                        <li>
+                            <app-label-with-default
+                                label="Category:" [value]="product?.category?.name">
+                            </app-label-with-default>
+                        </li>
+                        <li>
+                            <app-label-with-default
+                                label="Brand:" [value]="product?.brand">
+                            </app-label-with-default>
+                        </li>
+                        <li>
+                            <app-label-with-default
+                                label="On sale:" [value]="product?.hasDiscount ? 'Yes' : 'No'">
+                            </app-label-with-default>
+                        </li>
+                        <li>
+                            <app-label-with-default
+                                label="Regular price:" [value]="product?.regularPrice |  currency: 'USD'">
+                            </app-label-with-default>
+                        </li>
+                        <li>
+                            <app-label-with-default
+                                label="Sale price:" [value]="product?.salePrice |  currency: 'USD'">
+                            </app-label-with-default>
+                        </li>
+                    </ul>
+                </div>
+                <div style="width: 340px;">
+                    <ul class="aw-card-label-group aw-card-label-group-md">
+                        <li>
+                            <app-label-with-default label="Product status:">
+                                <app-product-status-badge [enabled]="product?.enabled"/>
+                            </app-label-with-default>
+                        </li>
+                        <li>
+                            <app-label-with-default
+                                label="Inventory status:">
+                                <app-product-inventory-status-badge  [inventoryStatus]="product?.inStock"/>
+                            </app-label-with-default>
+                        </li>
+                        <li>
+                            <app-label-with-default
+                                label="Inventory quantity:">
+                                {{product?.quantityInStock}} Units
+                            </app-label-with-default>
+                        </li>
+                        <li>
+                            <app-label-with-default
+                                label="Creation date:" [value]="product?.addedAt | date">
+                            </app-label-with-default>
+                        </li>
+                        <li>
+                            <app-label-with-default
+                                label="Updated date:" [value]="product?.updatedAt | date">
+                            </app-label-with-default>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="aw-card-label-group aw-card-label-group-md">
+                <p-button (click)="showDescription()" icon="pi pi-external-link" label="Description"></p-button>
+                <p-dialog header="Product description" appendTo="body" [(visible)]="canShowDescription" [modal]="true"
+                        [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+                    <p style="white-space: pre-line" class="m-0">
+                        {{product?.description}}
+                    </p>
+                </p-dialog>
+                <p-dialog [header]="stockMovementDialogTitle" appendTo="body" [(visible)]="canShowStockMovementDialog"
+                        [modal]="true" [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false"
+                        (onHide)="resetStockMovementDialog()">
+                    <form [formGroup]="stockMovementForm" (ngSubmit)="confirmStockMovement()" class="aw-form">
+                        <div class="p-fluid p-formgrid grid">
+                            <div class="field col-12">
+                                <label>Quantity</label>
+                                <p-inputNumber formControlName="quantity" [min]="1" [showButtons]="true"/>
+
+                                <app-validation-message
+                                        [control]="stockMovementForm.get('quantity')"
+                                        error="required"
+                                        text="Quantity is required"/>
+                                <app-validation-message
+                                        [control]="stockMovementForm.get('quantity')"
+                                        error="min"
+                                        text="Quantity must be greater than zero"/>
+                            </div>
+                        </div>
+                        <p-divider></p-divider>
+                        <div style="display: flex;
+                                    align-content: center;
+                                    align-items: center;
+                                    justify-content: flex-end;">
+                            <button pButton type="button"
+                                    style="margin-right: 10px;"
+                                    class="p-button-text"
+                                    label="Cancel"
+                                    [disabled]="savingStockMovement"
+                                    (click)="cancelStockMovement()"></button>
+                            <button pButton type="submit"
+                                    label="Confirm"
+                                    [loading]="savingStockMovement"
+                                    [disabled]="stockMovementForm.invalid || savingStockMovement"></button>
+                        </div>
+                    </form>
+                </p-dialog>
+            </div>
+            <div class="aw-detail-card-body" *ngIf="loading">
+                <div>
+                    <ul class="aw-card-label-group aw-card-label-group-xss ">
+                        <li>
+                            <p-skeleton width="30rem" styleClass="p-mb-2"></p-skeleton>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </p-card>
+    </div>
+    <div class="col-12 md:col-12 lg:col-12">
+        <p-card class="aw-card-no-padding">
+            <ng-template pTemplate="title">
+                <p-toolbar styleClass="aw-card-toolbar">
+                    <div class="p-toolbar-group-left">
+                        <ng-container *ngIf="loadingImages">
+                            <p-skeleton width="15rem" height="2rem" styleClass="p-mb-2"></p-skeleton>
+                        </ng-container>
+                        <ng-container *ngIf="!loadingImages">
+                            <div class="p-card-title ng-star-inserted aw-card-title">
+                                Photos
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div>
+                        <ng-container *ngIf="loadingImages">
+                            <p-skeleton width="15rem" height="2rem" styleClass="p-mb-2"></p-skeleton>
+                        </ng-container>
+                        <ng-container *ngIf="!loadingImages">
+                            <p-button label="Add image" (onClick)="addNewImage()"></p-button>
+                        </ng-container>
+                    </div>
+                </p-toolbar>
+            </ng-template>
+            <div class="aw-card-body" *ngIf="!loadingImages">
+                <p-galleria
+                    appendTo="body"
+                    [value]="images"
+                    [(visible)]="displayCustom!"
+                    [(activeIndex)]="activeIndex"
+                    [responsiveOptions]="responsiveOptions"
+                    [containerStyle]="{ 'max-width': '850px' }"
+                    [numVisible]="7"
+                    [circular]="true"
+                    [fullScreen]="true"
+                    [showItemNavigators]="true"
+                    [showThumbnails]="false">
+                    <ng-template pTemplate="item" let-item>
+                        <img [src]="item.itemImageSrc" style="width: 100%; display: block;" />
+                    </ng-template>
+                </p-galleria>
+                <p-carousel [value]="images" [numVisible]="4" [numScroll]="1" [circular]="false" [responsiveOptions]="carouselResponsiveOptions">
+                    <ng-template let-image pTemplate="item">
+                            <div class="border-round m-2 text-center p-2 image-card-body">
+                                <div class="my-1">
+                                    <p-image appendTo="body" src="{{image.url}}" height="120px" width="200px" [preview]="true"></p-image>
+                                </div>
+                                <div>
+                                    <div class="my-1">
+                                        <p-button (click)="makeImagePrimary($event, image.id)" pRipple icon="pi pi-star-fill" styleClass="mr-2 p-button-rounded p-button-success" pTooltip="Make primary" tooltipPosition="top" [disabled]="image?.id === product?.mainImage?.id"></p-button>
+                                        <p-button (click)="deleteImage($event, image.id)" pRipple icon="pi pi-trash" styleClass="mr-2 p-button-rounded p-button-danger" pTooltip="Delete" tooltipPosition="top"></p-button>
+                                    </div>
+                                </div>
+                            </div>
+                    </ng-template>
+                </p-carousel>
+            </div>
+            <div class="aw-detail-card-body" *ngIf="loadingImages">
+                <div>
+                    <ul class="aw-card-label-group aw-card-label-group-xss ">
+                        <li>
+                            <p-skeleton width="30rem" styleClass="p-mb-2"></p-skeleton>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </p-card>
+    </div>
+</div>
+<router-outlet></router-outlet>

@@ -1,0 +1,21 @@
+<form class="aw-form">
+
+    <p-fileUpload
+            (onUpload)="onUpload($event)" 
+            (onBeforeUpload)="onBeforeUpload($event)" 
+            (onSelect)="onSelect($event)"
+            (onError)="onError($event)"
+            (uploadHandler)="uploadHandler($event)"
+            customUpload="true"
+            [multiple]="false" 
+            [accept]="contentTypes" 
+            maxFileSize="1000000">
+        <ng-template pTemplate="content">
+            <ul *ngIf="selectedFile?.length">
+                <li>{{ selectedFile.name }} - {{ selectedFile.size }} bytes</li>
+            </ul>
+        </ng-template>
+    </p-fileUpload>
+    
+
+</form>

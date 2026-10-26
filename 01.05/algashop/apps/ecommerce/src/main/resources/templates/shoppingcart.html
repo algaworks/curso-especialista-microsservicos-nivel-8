@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/blank}">
+
+<th:block layout:fragment="breadcrumb">
+
+</th:block>
+
+<th:block layout:fragment="content">
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="breadcrumb-tree">
+                        <li><a href="/">Home</a></li>
+                        <li class="active">Shopping Cart</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /BREADCRUMB -->
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <th:block th:insert="~{fragments/shopping-cart-detail.html}"></th:block>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+</th:block>
+
+<th:block layout:fragment="javascript-extra">
+
+</th:block>
+
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/blank}">
+
+<th:block layout:fragment="breadcrumb">
+
+</th:block>
+
+<th:block layout:fragment="content">
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <th:block th:insert="~{fragments/messages.html}"></th:block>
+                <div class="col-md-12">
+<!--                    <h3 class="breadcrumb-header">My account</h3>-->
+                    <ul class="breadcrumb-tree">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/my-account" class="active">My account</a></li>
+                        <li class="active">Address</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /BREADCRUMB -->
+
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <!-- ASIDE -->
+                <div class="col-md-2" style="margin-bottom: 2em;">
+                    <!-- aside Widget -->
+                    <div class="aside">
+                        <ul class="aside-links">
+                            <li><a href="/my-account">Summary</a></li>
+                            <li><a href="/my-account/orders">Orders</a></li>
+                            <li><a href="/my-account/details">Account details</a></li>
+                            <li><a href="/my-account/address" class="active">Address</a></li>
+                            <li><a href="/my-account/credit-cards">Credit cards</a></li>
+                        </ul>
+                    </div>
+                    <!-- /aside Widget -->
+                </div>
+                <!-- /ASIDE -->
+
+                <!-- STORE -->
+                <div class="col-md-10">
+                    <!-- /store products -->
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="order-details">
+                                <h3>Your Address</h3>
+                                <th:block th:insert="~{fragments/messages-by-type.html}"></th:block>
+                                <form th:action="@{/my-account/address}" method="post" th:object="${editAddressForm}">
+                                    <div class="form-group">
+                                        <input class="input" data-mask="00000" type="text" th:field="*{zipCode}" th:errorclass="error" placeholder="Zipcode">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" type="text" th:field="*{street}" th:errorclass="error" placeholder="Street">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" type="text" th:field="*{number}" th:errorclass="error" placeholder="Number">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" type="text" th:field="*{complement}" th:errorclass="error" placeholder="Complement">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" type="text" th:field="*{neighborhood}" th:errorclass="error" placeholder="Neighborhood">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" type="text" th:field="*{state}" th:errorclass="error" placeholder="State">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" type="text" th:field="*{city}" th:errorclass="error" placeholder="City">
+                                    </div>
+                                    <button type="submit" class="primary-btn order-submit">Save</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /STORE -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+
+</th:block>
+
+<th:block layout:fragment="javascript-extra">
+
+</th:block>
+
+</html>
