@@ -1,0 +1,74 @@
+<p-accordion>
+  <p-accordionTab header="Filters">
+    <form [formGroup]="form!" (ngSubmit)="search()" class="aw-form">
+      <div class="p-fluid p-formgrid grid">
+        <div class="field col-6 md:col-4">
+          <label>Term: </label>
+          <input pInputText
+                 type="text"
+                 formControlName="term"
+                 class="form-control">
+        </div>
+      <!-- </div> -->
+      <!-- <div class="p-fluid p-formgrid grid"> -->
+        <div class="field col-6 md:col-4">
+          <label>Category: </label>
+          <p-multiSelect formControlName="categories"
+                      [options]="categories"
+                      optionLabel="name"
+                      placeholder="Select categories">
+          </p-multiSelect>
+        </div>
+      </div>
+      <div class="p-fluid p-formgrid grid">
+        <div class="field col-4 md:col-2 field-checkbox" style="padding-top: 2.5em;">
+          <p-inputSwitch formControlName="enabled"
+                         class="form-control" />
+          <label>Enabled</label>
+
+        </div>
+        <div class="field col-4 md:col-2 field-checkbox" style="padding-top: 2.5em;">
+          <p-inputSwitch formControlName="hasDiscount"
+                         class="form-control" />
+          <label>On sale</label>
+        </div>
+      </div>
+      <div class="p-fluid p-formgrid grid">
+        <div class="field col-6 md:col-4" style="display: flex;">
+          <div >
+            <label>Price from: </label>
+            <p-inputNumber formControlName="priceFrom"
+                          mode="currency"
+                          currency="USD"
+                          locale="en-US" />
+          </div>
+          <div class="ml-2">
+            <label>Price to: </label>
+            <p-inputNumber formControlName="priceTo"
+                          mode="currency"
+                          currency="USD"
+                          locale="en-US" />
+          </div>
+        </div>
+
+      </div>
+      <p-divider></p-divider>
+      <div class="col-12 form-actions" style="display: flex;
+                                                align-content: center;
+                                                align-items: center;
+                                                justify-content: flex-end;">
+        <button pButton
+                [text]="true"
+                style="margin-right: 10px;"
+                (click)="clearFilter()"
+                [loading]=searching
+                label="Clear"></button>
+        <button pButton
+                type="submit"
+                [loading]=searching
+                label="Search"></button>
+      </div>
+    </form>
+  </p-accordionTab>
+
+</p-accordion>

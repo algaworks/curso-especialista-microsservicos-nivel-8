@@ -1,0 +1,123 @@
+<div class="grid" style="margin-bottom: 0.5em;">
+    <div class="col-12">
+        <div class="aw-page-options-center">
+            <h1 class="aw-card-title">Customer details</h1>
+            <div class="p-toolbar-group-right">
+                <button pButton pRipple
+                        type="button" pTooltip="Voltar"
+                        tooltipPosition="bottom" routerLink="/customers"
+                        icon="pi pi-arrow-left"
+                        class="aw-top-actions-button p-button-secondary p-button-text"></button>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 md:col-12 lg:col-12">
+      <p-tabView>
+        <p-tabPanel header="Summary">
+          <div class="aw-flex-card-body" *ngIf="!loading">
+            <div style="width: 768px;">
+                <ul class="aw-card-label-group aw-card-label-group-md">
+                    <li>
+                        <app-label-with-default
+                            label="Name:" [value]="(customer?.firstName || '') + ' ' + (customer?.lastName || '')">
+                        </app-label-with-default>
+                    </li>
+                    <li>
+                      <app-label-with-default
+                          label="Document:" [value]="customer?.document">
+                      </app-label-with-default>
+                    </li>
+                    <li>
+                        <app-label-with-default
+                            label="Email:" [value]="customer?.email">
+                        </app-label-with-default>
+                    </li>
+                    <li>
+                      <app-label-with-default
+                          label="Phone:" [value]="customer?.phone">
+                      </app-label-with-default>
+                    </li>
+                    <li>
+                      <app-label-with-default
+                          label="Born on:" [value]="customer?.birthDate | date">
+                      </app-label-with-default>
+                    </li>
+
+                    <li>
+                      <app-label-with-default label="Promotion notifications:">
+                        <app-customer-promotion-notification-badge [allowPromotionNotifications]="customer?.promotionNotificationsAllowed"/>
+                      </app-label-with-default>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="aw-detail-card-body" *ngIf="loading">
+            <div>
+                <ul class="aw-card-label-group aw-card-label-group-xss ">
+                    <li>
+                        <p-skeleton width="30rem" styleClass="p-mb-2"></p-skeleton>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        </p-tabPanel>
+        <p-tabPanel header="Address">
+          <div class="aw-flex-card-body" *ngIf="!loading">
+            <div style="width: 340px;">
+                <ul class="aw-card-label-group aw-card-label-group-md">
+                    <li>
+                        <app-label-with-default
+                            label="Street:" [value]="customer?.address?.street">
+                        </app-label-with-default>
+                    </li>
+                    <li>
+                      <app-label-with-default
+                          label="Number:" [value]="customer?.address?.number">
+                      </app-label-with-default>
+                    </li>
+                    <li>
+                      <app-label-with-default
+                          label="Neighborhood:" [value]="customer?.address?.neighborhood">
+                      </app-label-with-default>
+                    </li>
+                    <li>
+                        <app-label-with-default
+                            label="Complement:" [value]="customer?.address?.complement">
+                        </app-label-with-default>
+                    </li>
+                </ul>
+            </div>
+            <div style="width: 340px;">
+              <ul class="aw-card-label-group aw-card-label-group-md">
+                  <li>
+                    <app-label-with-default
+                        label="City:" [value]="customer?.address?.city">
+                    </app-label-with-default>
+                  </li>
+                  <li>
+                    <app-label-with-default
+                        label="State:" [value]="customer?.address?.state">
+                    </app-label-with-default>
+                  </li>
+                  <li>
+                    <app-label-with-default
+                        label="ZipCode:" [value]="customer?.address?.zipCode">
+                    </app-label-with-default>
+                  </li>
+              </ul>
+            </div>
+          </div>
+          <div class="aw-detail-card-body" *ngIf="loading">
+            <div>
+                <ul class="aw-card-label-group aw-card-label-group-xss ">
+                    <li>
+                        <p-skeleton width="30rem" styleClass="p-mb-2"></p-skeleton>
+                    </li>
+                </ul>
+            </div>
+          </div>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+</div>
+<router-outlet></router-outlet>

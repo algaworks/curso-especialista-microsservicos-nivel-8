@@ -1,0 +1,165 @@
+server.port: 9998
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    reactor.netty.http.client: DEBUG
+
+spring:
+  application:
+    name: gateway-admin
+  config:
+    import:
+      - aws-secretsmanager:/secret/algashop/gateway-admin/redis-password?prefix=gateway-admin.secrets.
+      - aws-parameterstore:/config/algashop/gateway-admin?prefix=gateway-admin.params
+      - aws-parameterstore:/config/algashop/shared?prefix=shared.params
+  cloud:
+    aws:
+      credentials:
+        access-key: test
+        secret-key: test
+      region:
+        static: us-east-1
+      endpoint: http://algashop-localstack:4566
+    gateway:
+      server:
+        webflux:
+          route-refresh-listener:
+            enabled: false
+          default-filters:
+            - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY, INTERNAL_SERVER_ERROR
+                methods: GET,PUT
+                exceptions: java.io.IOException, java.util.concurrent.TimeoutException
+                backoff:
+                  firstBackoff: 10ms
+                  maxBackoff: 20ms
+          httpclient:
+            connect-timeout: ${gateway-admin.params.httpclient.connect-timeout}
+            response-timeout: ${gateway-admin.params.httpclient.response-timeout}
+          globalcors:
+            add-to-simple-url-handler-mapping: true
+            cors-configurations:
+              '[/**]':
+                allowedOrigins: ${gateway-admin.params.cors.allowed-origin}
+                allowedHeaders: '*'
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+          routes:
+            - id: orders-route
+              uri: lb://ordering
+              predicates:
+                - Path=/api/v1/orders/**
+                - Method=GET,POST,PUT,DELETE,OPTIONS
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: ordering-route-cb
+                    statusCodes:
+                      - 502
+                      - 504
+                      - 500
+            - id: orders-metrics-route
+              uri: lb://ordering
+              predicates:
+                - Path=/api/v1/metrics/sales-overview,/api/v1/metrics/total-overview
+                - Method=GET,OPTIONS
+            - id: billing-metrics-route
+              uri: lb://billing
+              predicates:
+                - Path=/api/v1/metrics/payments-overview
+                - Method=GET,OPTIONS
+            - id: customers-route
+              uri: lb://ordering
+              predicates:
+                - Path=/api/v1/customers/**
+                - Method=GET,OPTIONS
+            - id: product-catalog-list-route
+              uri: lb://product-catalog
+              predicates:
+                - Path=/api/v1/products
+                - Method=GET
+              filters:
+                - RemoveJsonAttributesResponseBody=shortDescription,mainImage,true
+            - id: product-catalog-route
+              uri: lb://product-catalog
+              predicates:
+                - Path=/api/v1/products,/api/v1/products/**,/api/v1/categories/**,/api/v1/upload-requests/**
+                - Method=GET,POST,PUT,DELETE,OPTIONS
+              filters:
+                - name: RequestRateLimiter
+                  args:
+                    redis-rate-limiter:
+                      replenishRate: 50
+                      burstCapacity: 200
+                      requestedTokens: 1
+                    key-resolver: "#{@rateLimitKeyResolver}"
+            - id: user-management-route
+              uri: lb://authorization-server
+              predicates:
+                - Path=/api/v1/users/**
+                - Method=GET,POST,PUT,DELETE,OPTIONS
+            - id: emails-route
+              uri: lb://notifications
+              predicates:
+                - Path=/api/v1/emails
+                - Method=POST,OPTIONS
+            - id: email-templates-route
+              uri: lb://notifications
+              predicates:
+                - Path=/api/v1/email-templates,/api/v1/email-templates/**
+                - Method=GET,POST,PUT,DELETE,OPTIONS
+  data:
+    redis:
+      host: ${gateway-admin.params.redis.host}
+      port: ${gateway-admin.params.redis.port}
+      password: ${gateway-admin.secrets.redis-password}
+      database: ${gateway-admin.params.redis.database}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${shared.params.auth-server-url}
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: ${shared.params.service-registry-url}/eureka
+  instance:
+    instanceId: ${random.uuid}
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, gateway, circuitbreakers
+  endpoint:
+    gateway:
+      enabled: true
+
+
+resilience4j:
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 60s
+  circuitbreaker:
+    instances:
+      ordering-route-cb:
+        slidingWindowSize: 8
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 5
+        slidingWindowType: COUNT_BASED
+        waitDurationInOpenState: 10s
+        maxWaitDurationInHalfOpenState: 30s
+        registerHealthIndicator: true

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/blank}">
+
+<th:block layout:fragment="breadcrumb">
+
+</th:block>
+
+<th:block layout:fragment="content">
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12">
+<!--                    <h3 class="breadcrumb-header">Pedido #240X5GX345AHT</h3>-->
+                    <ul class="breadcrumb-tree">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/my-account">My account</a></li>
+                        <li><a href="/my-account/orders">Orders</a></li>
+                        <li class="active" th:text="|#${orderCode}|">#240X5GX345AHT</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /BREADCRUMB -->
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <!-- ASIDE -->
+                <div class="col-md-2" style="margin-bottom: 2em;">
+                    <!-- aside Widget -->
+                    <div class="aside">
+                        <ul class="aside-links">
+                            <li><a href="/my-account">Summary</a></li>
+                            <li><a href="/my-account/orders" class="active">Orders</a></li>
+                            <li><a href="/my-account/details">Account details</a></li>
+                            <li><a href="/my-account/address">Address</a></li>
+                            <li><a href="/my-account/credit-cards">Credit cards</a></li>
+                        </ul>
+                    </div>
+                    <!-- /aside Widget -->
+                </div>
+                <!-- /ASIDE -->
+
+                <!-- STORE -->
+                <div class="col-md-10">
+                    <th:block th:insert="~{fragments/messages-by-type.html}"></th:block>
+                    <div th:if="${loadingMessage != null && order == null}" class="centralized-loader">
+                        <p th:text="${loadingMessage}"></p>
+                        <span class="loader"></span>
+                    </div>
+                    <div class="row"  style="margin-bottom: 2em;" >
+                        <div class="col-lg-6" th:if="${order != null}" th:object="${order}">
+                            <div class="order-details">
+                                <h3>Order</h3>
+                                <div class="order-summary">
+                                    <p><strong>Summary</strong></p>
+                                    <div class="order-col">
+                                        <div>Code</div>
+                                        <div th:text="|#*{id}|">#24AC55A5SS</div>
+                                    </div>
+                                    <div class="order-col">
+                                        <div>Ordered at</div>
+                                        <div th:text="${#temporals.format(order.placedAt, 'MM/dd/yyyy HH:mm')}">10/20/2024 at 10:13h</div>
+                                    </div>
+                                    <div th:if="${order.paidAt != null}" class="order-col">
+                                        <div>Paid at</div>
+                                        <div th:text="${#temporals.format(order.paidAt, 'MM/dd/yyyy HH:mm')}">10/20/2024 at 10:13h</div>
+                                    </div>
+                                    <div th:if="${order.canceledAt != null}" class="order-col">
+                                        <div>Canceled at</div>
+                                        <div th:text="${#temporals.format(order.canceledAt, 'MM/dd/yyyy HH:mm')}">10/20/2024 at 10:13h</div>
+                                    </div>
+                                    <div class="order-col">
+                                        <div>Status</div>
+                                        <th:block th:insert="~{fragments/order-status.html}"></th:block>
+                                    </div>
+                                    <div class="order-col">
+                                        <div>Payment method</div>
+                                        <th:block th:insert="~{fragments/order-payment-method.html}"></th:block>
+                                    </div>
+                                </div>
+
+                                <div class="order-summary">
+                                    <p><strong>Shipping address</strong></p>
+                                    <p th:text="${order.shipping.address.getAddressLine()}">Avenue XPTO 1000 , House 5622</p>
+                                    <div class="order-col">
+                                        <div>Zipcode</div>
+                                        <div th:text="${order.shipping.address.zipCode}"></div>
+                                    </div>
+                                </div>
+                                <div class="order-summary">
+                                    <p><strong>Billing info</strong></p>
+                                    <div class="order-col">
+                                        <div>Name</div>
+                                        <div th:text="|${order.billing.firstName} ${order.billing.lastName}|"></div>
+                                    </div>
+                                    <div class="order-col">
+                                        <div>Document</div>
+                                        <div th:text="${order.billing.document}"></div>
+                                    </div>
+                                    <div class="order-col">
+                                        <div>Email</div>
+                                        <div th:text="${order.billing.email}"></div>
+                                    </div>
+                                    <div class="order-col">
+                                        <div>Phone</div>
+                                        <div th:text="${order.billing.phone}"></div>
+                                    </div>
+                                    <p><strong>Billing address</strong></p>
+                                    <p th:text="${order.billing.address.getAddressLine()}">Avenue XPTO 1000 , House 5622</p>
+                                    <div class="order-col">
+                                        <div>Zipcode</div>
+                                        <div th:text="${order.billing.address.zipCode}"></div>
+                                    </div>
+                                </div>
+                                <div class="order-summary">
+                                    <p><strong>Items</strong></p>
+                                    <div class="order-products" th:each="item : ${order.items}">
+                                        <div class="order-col">
+                                            <div th:text="|${item.quantity}x ${item.name}|"></div>
+                                            <div th:text="${#numbers.formatCurrency(item.price)}">$980.00</div>
+                                        </div>
+                                    </div>
+                                    <div class="order-col">
+                                        <div>Shipping</div>
+                                        <div th:text="${order.shipping == null || order.shipping.cost == null || order.shipping.cost.signum() == 0 ? 'FREE' : #numbers.formatCurrency(order.shipping.cost)}">FREE</div>
+                                    </div>
+                                    <div class="order-col">
+                                        <div><strong>TOTAL</strong></div>
+                                        <div><strong th:text="${#numbers.formatCurrency(order.totalAmount)}">$2940.00</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /STORE -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+</th:block>
+
+<th:block layout:fragment="javascript-extra">
+    <input id="orderCodeInput" type="hidden" th:value="${orderCode}">
+    <input id="currentOrderStatusInput" type="hidden" th:value="${currentOrderStatus}">
+    <script>
+        let self = this;
+        $('.js-copy-paste-content').on('click', function() {
+            let sourceElement = this;
+            let value = $(sourceElement).attr('data-copy-paste');
+            console.log(value);
+            self.copyToClipboard(value, sourceElement);
+        });
+
+        async function copyToClipboard(textToCopy, sourceElement) {
+            // Navigator clipboard api needs a secure context (https)
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(textToCopy);
+                $(sourceElement).html('Código PIX copiado');
+                setTimeout(function(){
+                        $(sourceElement).html('Copiar código PIX');
+                }, 5000);
+            } else {
+                // Use the 'out of viewport hidden text area' trick
+                const textArea = document.createElement("textarea");
+                textArea.value = textToCopy;
+
+                // Move textarea out of the viewport so it's not visible
+                textArea.style.position = "absolute";
+                textArea.style.left = "-999999px";
+
+                document.body.prepend(textArea);
+                textArea.select();
+
+                try {
+                    document.execCommand('copy');
+                    $(sourceElement).html('Código PIX copiado');
+                    setTimeout(function(){
+                        $(sourceElement).html('Copiar código PIX');
+                    }, 5000);
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    textArea.remove();
+                }
+            }
+        }
+    </script>
+    <script th:if="${autoRefresh}">
+        let intervalID = setInterval(function() {
+            let orderCode = $('#orderCodeInput').val();
+            let currentOrderStatus = $('#currentOrderStatusInput').val();
+            let verifyOrderUrl =  [location.protocol, '//', location.host, "/my-account/orders/", orderCode, '/check?currentOrderStatus=', currentOrderStatus].join('');;
+            $.ajax({
+                url:  verifyOrderUrl,
+                accept : "application/json",
+                type: "GET",
+                async: false,
+                error: function(data) {
+                    clearInterval(intervalID);
+                },
+                statusCode: {
+                    200: function() {
+                        clearInterval(intervalID);
+                        location.reload();
+                    }
+                }
+            });
+        }, 10000);
+    </script>
+</th:block>
+
+</html>

@@ -351,6 +351,133 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
+  /connectors/{connector}/offsets:
+    get:
+      summary: Apache kafka Get Connector Offsets
+      description: Returns the connector's current offsets (KIP-875). The format of `partition` and `offset` depends on the connector. Sink connectors use `kafka_topic`/`kafka_partition` and `kafka_offset`, while source connectors (such as Debezium) use maps defined by the connector itself.
+      operationId: getConnectorOffsets
+      tags:
+      - Connectors
+      parameters:
+      - name: connector
+        in: path
+        required: true
+        schema:
+          type: string
+        example: example-value
+      responses:
+        '200':
+          description: Connector offsets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectorOffsets'
+              examples:
+                getConnectorOffsets200Example:
+                  summary: Default getConnectorOffsets 200 response
+                  x-microcks-default: true
+                  value:
+                    offsets:
+                    - partition:
+                        server: algashop
+                      offset:
+                        lsn: 23456789
+                        txId: 745
+                        ts_usec: 1761568800000000
+        '404':
+          description: Connector not found
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    patch:
+      summary: Apache kafka Alter Connector Offsets
+      description: Alters the connector's offsets (KIP-875). The connector must be stopped (`PUT /connectors/{connector}/stop`); otherwise the API responds with 400. For sink connectors, sending a null `offset` removes the offset of the given partition.
+      operationId: alterConnectorOffsets
+      tags:
+      - Connectors
+      parameters:
+      - name: connector
+        in: path
+        required: true
+        schema:
+          type: string
+        example: example-value
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectorOffsets'
+            examples:
+              alterConnectorOffsetsRequestExample:
+                summary: Default alterConnectorOffsets request
+                x-microcks-default: true
+                value:
+                  offsets:
+                  - partition:
+                      kafka_topic: algashop.orders
+                      kafka_partition: 0
+                    offset:
+                      kafka_offset: 100
+      responses:
+        '200':
+          description: Offsets altered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                alterConnectorOffsets200Example:
+                  summary: Default alterConnectorOffsets 200 response
+                  x-microcks-default: true
+                  value:
+                    message: The Connect framework-managed offsets for this connector have been altered successfully. However, if this connector manages offsets externally, they will need to be manually altered in the system that the connector uses.
+        '400':
+          description: The connector is not stopped (state other than STOPPED) or the given offsets are invalid
+        '404':
+          description: Connector not found
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    delete:
+      summary: Apache kafka Reset Connector Offsets
+      description: Resets the connector's offsets (KIP-875). The connector must be stopped (`PUT /connectors/{connector}/stop`); otherwise the API responds with 400. For source connectors such as Debezium, the next start takes a new snapshot.
+      operationId: resetConnectorOffsets
+      tags:
+      - Connectors
+      parameters:
+      - name: connector
+        in: path
+        required: true
+        schema:
+          type: string
+        example: example-value
+      responses:
+        '200':
+          description: Offsets reset
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                resetConnectorOffsets200Example:
+                  summary: Default resetConnectorOffsets 200 response
+                  x-microcks-default: true
+                  value:
+                    message: The Connect framework-managed offsets for this connector have been reset successfully. However, if this connector manages offsets externally, they will need to be manually reset in the system that the connector uses.
+        '400':
+          description: The connector is not stopped (state other than STOPPED)
+        '404':
+          description: Connector not found
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /connector-plugins:
     get:
       summary: Apache kafka List Connector Plugins
@@ -578,6 +705,26 @@ components:
           type: string
         trace:
           type: string
+    ConnectorOffset:
+      type: object
+      properties:
+        partition:
+          type: object
+          description: Identifies the source/target partition; the format is specific to each connector.
+          additionalProperties: true
+        offset:
+          type:
+          - object
+          - 'null'
+          description: The connector's position in that partition; the format is specific to each connector.
+          additionalProperties: true
+    ConnectorOffsets:
+      type: object
+      properties:
+        offsets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectorOffset'
     ConnectorPlugin:
       type: object
       properties:

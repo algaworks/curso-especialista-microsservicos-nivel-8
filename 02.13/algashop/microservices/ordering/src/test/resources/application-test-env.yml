@@ -1,0 +1,118 @@
+spring:
+  cache:
+    type: none
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            product-catalog:
+              - uri: http://localhost:8781
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ordering_test
+    username: postgres
+    password: postgres
+    hikari:
+        minimum-idle: 1
+        maximum-pool-size: 10
+        connection-timeout: 3000
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration,classpath:db/clean
+    user: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/ordering_test
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${algashop.integrations.authorization-server.url}
+      client:
+        provider:
+          algashop-as:
+            token-uri: ${algashop.integrations.authorization-server.url}/oauth2/token
+        registration:
+          algashop-ordering-service-client:
+            provider: algashop-as
+            client-id: algashop-ordering-service
+            client-secret: secret123
+            authorization-grant-type: client_credentials
+            client-authentication-method: client_secret_basic
+            scope: products:read
+  kafka:
+    properties:
+      spring.json.type.mapping:
+        ProductCatalog.ProductDelistedIntegrationEvent:com.algaworks.algashop.ordering.core.application.product.event.ProductDelistedIntegrationEvent,
+        ProductCatalog.ProductListedIntegrationEvent:com.algaworks.algashop.ordering.core.application.product.event.ProductListedIntegrationEvent,
+        ProductCatalog.ProductRestockedIntegrationEvent:com.algaworks.algashop.ordering.core.application.product.event.ProductRestockedIntegrationEvent,
+        ProductCatalog.ProductSoldOutIntegrationEvent:com.algaworks.algashop.ordering.core.application.product.event.ProductSoldOutIntegrationEvent,
+        ProductCatalog.ProductPriceChangedIntegrationEvent:com.algaworks.algashop.ordering.core.application.product.event.ProductPriceChangedIntegrationEvent,
+        ProductCatalog.ProductPriceChangedV2IntegrationEvent:com.algaworks.algashop.ordering.core.application.product.event.ProductPriceChangedV2IntegrationEvent,
+        Ordering.OrderPlacedIntegrationEvent:com.algaworks.algashop.ordering.core.application.order.event.OrderPlacedIntegrationEvent,
+        Ordering.OrderPaidIntegrationEvent:com.algaworks.algashop.ordering.core.application.order.event.OrderPaidIntegrationEvent
+    producer:
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+      properties:
+        enable.idempotence: true
+        linger.ms: 0
+        request.timeout.ms: 4000
+        delivery.timeout.ms: 5000
+        max.block.ms: 5000
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      group-id: ordering
+      properties:
+        max.poll.interval.ms: 300000 # 5 minutos ->
+        max.poll.records: 500 # quantidade de registros buscados
+        heartbeat.interval.ms: 3000 # 3 segundos
+        #        max.poll.interval.ms: 10000
+        #        max.poll.records: 1
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+        spring.json.trusted.packages: com.algaworks.algashop.*
+        spring.json.key.default.type: java.lang.String
+        spring.json.value.default.type: java.lang.String
+        spring.json.value.type.method: com.algaworks.algashop.ordering.infrastructure.config.kafka.KafkaConsumerTypeIdIdentifier.readType
+
+
+eureka:
+  client:
+    enabled: false
+
+algashop:
+  integrations:
+    authorization-server.url: http://auth.algashop.local:8081
+    shipping.provider: FAKE
+    rapidex.url: http://localhost:8780
+    product-catalog:
+      url: http://product-catalog
+      oauth2-client-registration-id: algashop-ordering-service-client
+  notifications:
+    email-templates:
+      order-placed: 0198d0a1-2c44-7d0b-8e11-9a0b7c5d3f21
+  messaging:
+    kafka:
+      product-event-topic-name: product-catalog.product.events
+      order-event-topic-name: ordering.order.events
+      product-events-consumer-group: ordering.product-events
+      billing-invoice-commands-topic-name: billing.invoice.commands
+      product-catalog-stock-commands-topic-name: product-catalog.stock.commands
+      saga-replies-topic-name: ordering.saga.replies
+      saga-replies-consumer-group: ordering.saga-replies
+      notifications-email-commands-topic-name: notifications.email.commands
+    outbox:
+      enabled: true
+      send-timeout: PT5S
+      batch-size: 100
+      poll-interval: PT1M #PT5S
+      max-attempts: 10
+      backoff: PT5S
+      batch-deadline: PT3M
+      dispatcher:
+        enabled: false

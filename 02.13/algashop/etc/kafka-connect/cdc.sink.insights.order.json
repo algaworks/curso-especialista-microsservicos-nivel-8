@@ -1,0 +1,18 @@
+{
+  "name": "cdc.sink.insights.order",
+  "connector.class": "io.debezium.connector.jdbc.JdbcSinkConnector",
+  "tasks.max": "1",
+  "connection.url": "jdbc:postgresql://algashop-insights-postgres:5432/insights",
+  "connection.username": "postgres",
+  "connection.password": "postgres",
+  "topics": "cdc.ordering.public.order",
+  "collection.name.format": "order",
+  "insert.mode": "upsert",
+  "primary.key.mode": "record_key",
+  "schema.evolution": "none",
+  "delete.enabled": "true",
+  "field.exclude.list": "shipping_address_city,shipping_address_state",
+  "errors.tolerance": "all",
+  "errors.deadletterqueue.topic.name": "dlt.cdc.sink.insights.order",
+  "errors.deadletterqueue.context.headers.enable": "true"
+}

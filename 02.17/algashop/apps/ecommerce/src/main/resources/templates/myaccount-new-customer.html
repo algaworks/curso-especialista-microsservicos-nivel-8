@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/blank}">
+
+<th:block layout:fragment="breadcrumb">
+
+</th:block>
+
+<th:block layout:fragment="content">
+    <div id="breadcrumb" class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="breadcrumb-tree">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/my-account">My account</a></li>
+                        <li class="active">Complete profile</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="order-details" th:object="${newCustomerProfileForm}">
+                        <h3>Complete your profile</h3>
+                        <th:block th:insert="~{fragments/messages-by-type.html}"></th:block>
+                        <div th:if="${#fields.hasErrors()}" class="alert alert-danger" role="alert">
+                            There are errors in the form!
+                        </div>
+                        <form th:action="@{/my-account/complete-your-profile}" method="post">
+                            <h4>Personal data</h4>
+                            <div class="form-group">
+                                <input class="input" type="email" th:value="${email}" placeholder="Email" readonly>
+                            </div>
+                            <div class="form-group">
+                                <input class="input" type="text" th:field="*{fullName}" th:errorclass="error" placeholder="Full name" required>
+                            </div>
+                            <div class="form-group">
+                                <input class="input" data-mask="000-000-0000" type="text" th:field="*{phone}" th:errorclass="error" placeholder="Phone" required>
+                            </div>
+                            <div class="form-group">
+                                <input class="input" data-mask="00/00/0000" type="text" th:field="*{birthDate}" th:errorclass="error" placeholder="Born on" required>
+                            </div>
+                            <div class="form-group">
+                                <input class="input" data-mask="000-00-000" type="text" th:field="*{document}" th:errorclass="error" placeholder="Document" required>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-checkbox">
+                                    <input type="checkbox" id="promoProfile"
+                                           th:checked="*{allowPromotionNotifications}" name="allowPromotionNotifications">
+                                    <label for="promoProfile">
+                                        <span></span>
+                                        Do you accept receiving promotion alerts?
+                                    </label>
+                                </div>
+                            </div>
+
+                            <hr>
+                            <h4>Address</h4>
+                            <div class="form-group">
+                                <input class="input" data-mask="00000" type="text" th:field="*{address.zipCode}" th:errorclass="error" placeholder="Zipcode" required>
+                            </div>
+                            <div class="form-group">
+                                <input class="input" type="text" th:field="*{address.street}" th:errorclass="error" placeholder="Street" required>
+                            </div>
+                            <div class="form-group">
+                                <input class="input" type="text" th:field="*{address.number}" th:errorclass="error" placeholder="Number" required>
+                            </div>
+                            <div class="form-group">
+                                <input class="input" type="text" th:field="*{address.complement}" th:errorclass="error" placeholder="Complement">
+                            </div>
+                            <div class="form-group">
+                                <input class="input" type="text" th:field="*{address.neighborhood}" th:errorclass="error" placeholder="Neighborhood" required>
+                            </div>
+                            <div class="form-group">
+                                <input class="input" type="text" th:field="*{address.state}" th:errorclass="error" placeholder="State" required>
+                            </div>
+                            <div class="form-group">
+                                <input class="input" type="text" th:field="*{address.city}" th:errorclass="error" placeholder="City" required>
+                            </div>
+                            <button type="submit" class="primary-btn order-submit">Create profile</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="javascript-extra">
+
+</th:block>
+
+</html>

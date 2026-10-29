@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/blank}">
+
+<th:block layout:fragment="breadcrumb">
+
+</th:block>
+
+<th:block layout:fragment="content">
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="breadcrumb-tree">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/my-account" class="active">My account</a></li>
+                        <li class="active">Credit cards</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /BREADCRUMB -->
+
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <!-- ASIDE -->
+                <div class="col-md-2" style="margin-bottom: 2em;">
+                    <!-- aside Widget -->
+                    <div class="aside">
+                        <ul class="aside-links">
+                            <li><a href="/my-account">Summary</a></li>
+                            <li><a href="/my-account/orders">Orders</a></li>
+                            <li><a href="/my-account/details">Account details</a></li>
+                            <li><a href="/my-account/address">Address</a></li>
+                            <li><a href="/my-account/credit-cards" class="active">Credit cards</a></li>
+                        </ul>
+                    </div>
+                    <!-- /aside Widget -->
+                </div>
+                <!-- /ASIDE -->
+
+                <!-- STORE -->
+                <div class="col-md-10">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="clearfix" style="margin-bottom: 20px;">
+                                <h3 class="pull-left" style="margin-top: 8px;">Credit cards</h3>
+                                <button type="button" class="primary-btn compact-btn pull-right js-open-credit-card-modal"
+                                        data-toggle="modal" data-target="#creditCardRegistrationModal">
+                                    Add new card
+                                </button>
+                            </div>
+                            <div class="alert alert-success hidden" id="creditCardRemovalSuccess" role="alert">
+                                Credit card removed successfully.
+                            </div>
+                            <div>
+                                <p th:if="${#lists.isEmpty(creditCards)}" class="js-credit-card-empty">
+                                    You do not have saved credit cards yet.
+                                </p>
+                                <div class="table-responsive shopping-cart-item-table">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col" class="border-0 bg-light">
+                                                <div class="p-2 px-3 text-uppercase">Card</div>
+                                            </th>
+                                            <th scope="col" class="border-0 bg-light">
+                                                <div class="py-2 text-uppercase">Expires</div>
+                                            </th>
+                                            <th scope="col" class="border-0 bg-light">
+                                                <div class="py-2 text-uppercase">Actions</div>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="js-credit-card-list" data-mode="account">
+                                        <tr class="js-credit-card-item" th:each="creditCard : ${creditCards}">
+                                            <th scope="row" class="border-0">
+                                                <div class="p-2 shopping-cart-item-table-head">
+                                                    <div class="ml-3 d-inline-block align-middle">
+                                                        <h5 class="mb-0">
+                                                            <span class="text-dark d-inline-block align-middle"
+                                                                  th:text="|${creditCard.brand} ****-${creditCard.lastNumbers}|">Visa ****-1234</span>
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                            <td class="border-0 align-middle" th:text="|${creditCard.expMonth}/${creditCard.expYear}|">12/2028</td>
+                                            <td class="border-0 align-middle">
+                                                <button class="text-dark js-on-click-remove-credit-card"
+                                                        th:data-credit-card-id="${creditCard.id}">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /STORE -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+
+    <th:block th:insert="~{fragments/credit-card-registration-modal.html}"></th:block>
+
+    <div class="modal fade" id="creditCardRemovalConfirmationModal" tabindex="-1" role="dialog"
+         aria-labelledby="creditCardRemovalConfirmationModalTitle">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="creditCardRemovalConfirmationModalTitle">Remove credit card</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger hidden" id="creditCardRemovalError" role="alert">
+                        An error occurred while trying to remove the credit card. Please try again later.
+                    </div>
+                    <p>Are you sure you want to remove this credit card?</p>
+                    <p>This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="secondary-btn btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="primary-btn order-submit" id="creditCardRemovalConfirm">
+                        Remove card
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="javascript-extra">
+
+</th:block>
+
+</html>

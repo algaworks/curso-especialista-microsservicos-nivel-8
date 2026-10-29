@@ -1,0 +1,75 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="aw-page-title">
+            <h1 class="aw-card-title">Orders</h1>
+        </div>
+        <div class="aw-page-options">
+            <!--filter-->
+            <app-order-filter (doFilter)="doSearch($event)"
+                              [appliedFilter]="filter"/>
+        </div>
+
+        <p-table [value]="orders!"
+                styleClass="p-datatable-sm p-card"
+                [lazyLoadOnInit]="false"
+                [resizableColumns]="true"
+                columnResizeMode="expand"
+                [lazy]="true"
+                (onLazyLoad)="onPageChange($event)"
+                [paginator]="true"
+                [rows]="recordsPerPage"
+                [totalRecords]="totalElements"
+                [loading]="loading">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Code</th>
+                    <th>Customer</th>
+                    <th>Total items</th>
+                    <th>Total Amount</th>
+                    <th [pSortableColumn]="sortProperties.STATUS">Status<p-sortIcon [field]="sortProperties.STATUS"></p-sortIcon></th>
+                    <th [pSortableColumn]="sortProperties.PLACE_AT">Ordered at<p-sortIcon [field]="sortProperties.PLACE_AT"></p-sortIcon></th>
+                    <th [pSortableColumn]="sortProperties.PAID_AT">Paid at<p-sortIcon [field]="sortProperties.PAID_AT"></p-sortIcon></th>
+                    <th [pSortableColumn]="sortProperties.CANCELED_AT">Canceled at<p-sortIcon [field]="sortProperties.CANCELED_AT"></p-sortIcon></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-order>
+                <tr>
+                    <td>
+                      <a routerLink="/orders/{{order.id}}"
+                          class="aw-table-link">
+                          {{order.id}}
+                      </a>
+                    </td>
+                    <td>
+                        {{order.customer?.firstName}} {{order.customer?.lastName}}
+                    </td>
+                    <td>
+                        {{order.totalItems}}
+                    </td>
+                    <td>
+                        {{order.totalAmount}}
+                    </td>
+                    <td>
+                      <app-order-status-badge [status]="order.status"/>
+                    </td>
+                     <td>
+                        {{order.placedAt | date}}
+                    </td>
+                     <td>
+                        {{order.paidAt | date}}
+                    </td>
+                     <td>
+                        {{order.canceledAt | date}}
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage" let-columns>
+                <tr>
+                    <td [attr.colspan]="8" style="text-align: center; padding: 1em;">
+                      No results were found for this search.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

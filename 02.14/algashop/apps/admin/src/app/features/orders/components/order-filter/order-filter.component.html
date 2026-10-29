@@ -1,0 +1,66 @@
+<p-accordion>
+  <p-accordionTab header="Filters">
+    <form [formGroup]="form!" (ngSubmit)="search()" class="aw-form">
+      <div class="p-fluid p-formgrid grid col-8">
+        <div class="field col-12 md:col-4" >
+            <label>Code: </label>
+            <input pInputText type="text"
+                    formControlName="code"
+                    class="form-control">
+        </div>
+        <div class="field col-12 md:col-4" >
+          <label>Status: </label>
+          <p-autoComplete formControlName="status"
+                          [dropdown]="true"
+                          [suggestions]="filteredStatusList"
+                          (completeMethod)="filterStatus($event)"
+                          field="label"/>
+        </div>
+        <div class="field col-6">
+
+          <label>Ordered from: </label>
+          <p-calendar formControlName="placedAtFrom"
+                      [showIcon]="true" />
+        </div>
+        <div class="field col-6">
+
+          <label>Ordered to: </label>
+          <p-calendar formControlName="placedAtTo"
+                      [showIcon]="true" />
+        </div>
+        <div class="field col-6">
+
+          <label>Total amount from: </label>
+          <p-inputNumber formControlName="totalAmountFrom"
+                        mode="currency"
+                        currency="USD"
+                        locale="en" />
+        </div>
+        <div class="field col-6">
+
+          <label>Total amount to: </label>
+          <p-inputNumber formControlName="totalAmountTo"
+                        mode="currency"
+                        currency="USD"
+                        locale="en" />
+        </div>
+      </div >
+      <p-divider></p-divider>
+      <div class="col-12 form-actions" style="display: flex;
+                                                align-content: center;
+                                                align-items: center;
+                                                justify-content: flex-end;">
+        <button pButton
+                [text]="true"
+                style="margin-right: 10px;"
+                (click)="clearFilter()"
+                [loading]=searching
+                label="Clear"></button>
+        <button pButton
+                type="submit"
+                [loading]=searching
+                label="Search"></button>
+      </div>
+    </form>
+  </p-accordionTab>
+</p-accordion>

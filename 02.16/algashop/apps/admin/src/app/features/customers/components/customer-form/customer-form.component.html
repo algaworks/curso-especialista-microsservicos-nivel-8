@@ -1,0 +1,155 @@
+<h1 class="aw-card-title">New customer</h1>
+<p-card class="aw-card-no-padding">
+    <form [formGroup]="form!" (ngSubmit)="save()" class="aw-form">
+        <div class="p-fluid p-formgrid grid">
+          <div class="field col-12 md:col-6">
+            <label>Full name</label>
+            <input pInputText type="text"
+                    formControlName="fullName"
+                    class="form-control">
+            <app-validation-message
+                    [control]="form?.get('fullName')"
+                    error="required"
+                    text="Full name is required."/>
+          </div>
+          <div class="field col-12 md:col-6">
+            <label>Document</label>
+            <input pInputText type="text"
+                    formControlName="document"
+                    class="form-control">
+            <app-validation-message
+                    [control]="form?.get('document')"
+                    error="required"
+                    text="Document is required."/>
+          </div>
+          <div class="field col-6 md:col-6">
+            <label>Email</label>
+            <input pInputText type="text"
+                    formControlName="email"
+                    class="form-control">
+            <app-validation-message
+                    [control]="form?.get('email')"
+                    error="required"
+                    text="Email is required."/>
+            <app-validation-message
+                    [control]="form?.get('email')"
+                    error="email"
+                    text="Email is invalid."/>
+          </div>
+          <div class="field col-12 md:col-6">
+            <label>Phone</label>
+            <p-inputMask mask="(99) 99999-9999"
+                    formControlName="phone"
+                    class="form-control" />
+            <app-validation-message
+                    [control]="form?.get('phone')"
+                    error="required"
+                    text="Phone is required."/>
+          </div>
+          <div class="field col-6 md:col-3">
+            <label>Born on: </label>
+            <p-calendar formControlName="birthDate"
+                        [showIcon]="true"
+                        [maxDate]="maxBornDate" />
+            <app-validation-message
+                    [control]="form?.get('birthDate')"
+                    error="required"
+                    text="Born on is required."/>
+          </div>
+          <div class="field col-3 md:col-2 field-checkbox" style="padding-top: 2.5em;">
+            <p-inputSwitch formControlName="allowPromotionNotifications"
+                           class="form-control" />
+            <label>Promotion notifications</label>
+          </div>
+        </div>
+        <p-divider></p-divider>
+        <h2 class="aw-card-title">Address</h2>
+        <div formGroupName="address" class="p-fluid p-formgrid grid">
+          <div class="field col-12 md:col-6">
+            <label>Street</label>
+            <input pInputText type="text"
+                    formControlName="street"
+                    class="form-control">
+            <app-validation-message
+                    [control]="form?.get('street')"
+                    error="required"
+                    text="Street is required."/>
+          </div>
+          <div class="field col-6 md:col-6">
+            <label>Number</label>
+            <input pInputText type="number"
+                    formControlName="number"
+                    class="form-control">
+            <app-validation-message
+                    [control]="form?.get('number')"
+                    error="required"
+                    text="Number is required."/>
+          </div>
+          <div class="field col-12 md:col-6">
+            <label>Complement</label>
+            <input pInputText type="text"
+                    formControlName="complement"
+                    class="form-control">
+            <app-validation-message
+                    [control]="form?.get('complement')"
+                    error="required"
+                    text="Complement is required."/>
+          </div>
+          <div class="field col-12 md:col-6">
+            <label>Neighborhood</label>
+            <input pInputText type="text"
+                    formControlName="neighborhood"
+                    class="form-control">
+            <app-validation-message
+                    [control]="form?.get('neighborhood')"
+                    error="required"
+                    text="Neighborhood is required."/>
+          </div>
+          <div class="field col-12 md:col-6">
+            <label>City</label>
+            <input pInputText type="text"
+                    formControlName="city"
+                    class="form-control">
+            <app-validation-message
+                    [control]="form?.get('city')"
+                    error="required"
+                    text="City is required."/>
+          </div>
+          <div class="field col-12 md:col-6">
+            <label>State</label>
+            <input pInputText type="text"
+                    formControlName="state"
+                    class="form-control">
+            <app-validation-message
+                    [control]="form?.get('state')"
+                    error="required"
+                    text="State is required."/>
+          </div>
+          <div class="field col-12 md:col-6">
+            <label>Zip code</label>
+            <p-inputMask mask="99999-999"
+                    formControlName="zipCode"
+                    class="form-control" />
+            <app-validation-message
+                    [control]="form?.get('zipCode')"
+                    error="required"
+                    text="Zip code is required."/>
+          </div>
+
+
+        </div>
+        <p-divider></p-divider>
+        <div class="col-12 form-actions"
+             style="display: flex;
+                    align-content: center;
+                    align-items: center;
+                    justify-content: flex-end;">
+            <a style="margin-right: 10px;" class="aw-table-link"
+                [routerLink]="'/customers'">Back</a>
+            <button pButton type="submit"
+                    [loading]=saving
+                    [disabled]="isFormInvalid()"
+                    label="Save" ></button>
+          </div>
+    </form>
+</p-card>

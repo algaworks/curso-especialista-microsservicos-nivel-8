@@ -1,0 +1,33 @@
+<div class="ng-header">
+    <div class="ng-header-left">
+        <div class="toggle-menu-button">
+            <a class="icon" (click)="toggleMenu()"><i class="pi" [ngClass]="menuIcon"></i></a>
+        </div>
+        <div class="logo">
+            <a routerLink="/"><img src="assets/images/logo.png"></a>
+        </div>
+    </div>
+    <div class="ng-header-right">
+        <p-avatar
+            (click)="op.toggle($event)"
+            icon="pi pi-user"
+            shape="circle"
+            styleClass="mr-4 aw-cursor-pointer p-avatar-lg p-avatar-header">
+        </p-avatar>
+        <p-overlayPanel #op class="aw-user-header">
+            <ng-template pTemplate>
+                <div class="c-user-dropdown__user">
+                    <span class="c-user-dropdown__user-name"  style="text-align: left; padding: 8px 12px;">{{this.userName}}</span>
+                    <span class="c-user-dropdown__user-email" style="text-align: left; padding: 6px 12px;">{{this.userEmail}}</span>
+                    <ul class="c-user-dropdown__menu-list">
+                        <li class="c-user-dropdown__menu-item">
+                            <a pButton class="p-button-link" style="text-align: left; padding: 8px 12px;" (click)="logout()">Sair</a>
+                        </li>
+                    </ul>
+                </div>
+            </ng-template>
+        </p-overlayPanel>
+        
+    </div>
+    
+</div>
