@@ -1,0 +1,20 @@
+server.port: 8086
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/insights
+    username: postgres
+    password: postgres
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://auth.algashop.local:8081
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    instanceId: ${random.uuid}
+    prefer-ip-address: true

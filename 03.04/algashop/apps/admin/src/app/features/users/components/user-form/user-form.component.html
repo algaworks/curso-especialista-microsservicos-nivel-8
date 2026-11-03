@@ -1,0 +1,68 @@
+<h1 class="aw-card-title" >
+    <ng-container *ngIf="!isEditing()">
+        New user
+    </ng-container>
+    <ng-container *ngIf="isEditing()">
+        Editing user
+    </ng-container>
+</h1>
+<p-card class="aw-card-no-padding">
+    <form [formGroup]="form!" (ngSubmit)="save()" class="aw-form">
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-6">
+                <label>Name</label>
+                <input pInputText type="text"
+                        formControlName="name"
+                        class="form-control">
+                <app-validation-message
+                        [control]="form?.get('name')"
+                        error="required"
+                        text="Name is required."/>
+            </div>
+            <div class="field col-6 md:col-4">
+                <label>Type</label>
+                <p-dropdown formControlName="type"
+                    [options]="userTypeOptions"
+                    optionLabel="label"
+                    placeholder="Select an user type"></p-dropdown>
+
+                <app-validation-message
+                        [control]="form?.get('type')"
+                        error="required"
+                        text="User type is required."/>
+            </div>
+            <div class="field col-12 md:col-6">
+                <label>Email</label>
+                <input pInputText type="text"
+                        formControlName="email"
+                        [readonly]="isEditing()"
+                        class="form-control">
+                <app-validation-message
+                        [control]="form?.get('email')"
+                        error="required"
+                        text="Email is required."/>
+                <app-validation-message
+                        [control]="form?.get('email')"
+                        error="email"
+                        text="Email is invalid."/>
+            </div>
+            <div class="field col-12 md:col-4" *ngIf="isEditing()">
+                <label>Enabled</label>
+                <p-inputSwitch formControlName="enabled" class="form-control"/>
+            </div>
+        </div>
+        <p-divider></p-divider>
+        <div class="col-12 form-actions"
+             style="display: flex;
+                    align-content: center;
+                    align-items: center;
+                    justify-content: flex-end;">
+            <a style="margin-right: 10px;" class="aw-table-link"
+                [routerLink]="isEditing() ? '/users/'+userId : '/users'">Back</a>
+            <button pButton type="submit"
+                    [loading]=saving
+                    [disabled]="isFormInvalid()"
+                    label="Save" ></button>
+          </div>
+    </form>
+</p-card>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="messages" th:if="${alertMessage != null}" th:switch="${alertMessage.type?.name()}">
+    <th:block th:case="'INFO'">
+        <div class="alert alert-info" role="alert" th:text="${alertMessage.content}"></div>
+    </th:block>
+    <th:block th:case="'SUCCESS'">
+        <div class="alert alert-success" role="alert" th:text="${alertMessage.content}"></div>
+    </th:block>
+    <th:block th:case="'WARNING'">
+        <div class="alert alert-warning" role="alert" th:text="${alertMessage.content}"></div>
+    </th:block>
+    <th:block th:case="'DANGER'">
+        <div class="alert alert-danger" role="alert" th:text="${alertMessage.content}"></div>
+    </th:block>
+</th:block>
+</body>
+</html>

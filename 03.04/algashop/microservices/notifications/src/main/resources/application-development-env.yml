@@ -1,0 +1,34 @@
+server.port: 8084
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/notifications
+    username: postgres
+    password: postgres
+  jpa:
+    show-sql: true
+  flyway:
+    locations: classpath:db/migration,classpath:db/testdata
+  kafka:
+    bootstrap-servers: algashop-kafka-1:9092,algashop-kafka-2:9093,algashop-kafka-3:9094
+  mail:
+    host: localhost
+    port: 1025
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://auth.algashop.local:8081
+
+algashop:
+  notifications:
+    mail:
+      from: no-reply@algashop.local
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    instanceId: ${random.uuid}
+    prefer-ip-address: true

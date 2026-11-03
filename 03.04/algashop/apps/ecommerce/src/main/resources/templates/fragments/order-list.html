@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Order table -->
+<div class="table-responsive shopping-cart-item-table">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col" class="border-0 bg-light">
+                <div class="p-2 px-3 text-uppercase">Order</div>
+            </th>
+            <th scope="col" class="border-0 bg-light">
+                <div class="py-2 text-uppercase">Ordered at</div>
+            </th>
+            <th scope="col" class="border-0 bg-light">
+                <div class="py-2 text-uppercase">Status</div>
+            </th>
+            <th scope="col" class="border-0 bg-light">
+                <div class="py-2 text-uppercase">Amount</div>
+            </th>
+            <th scope="col" class="border-0 bg-light">
+                <div class="py-2 text-uppercase">Payment</div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${ordersPage.content}">
+            <th scope="row" class="border-0">
+                <div class="p-2 shopping-cart-item-table-head">
+                    <div class="ml-3 d-inline-block align-middle">
+                        <h5 class="mb-0">
+                            <a th:href="|/my-account/orders/${order.id}|"
+                               class="text-dark d-inline-block align-middle" th:text="|#${order.id}|">#247PAAQ8NWHP</a>
+                        </h5>
+                    </div>
+                </div>
+            </th>
+            <td class="border-0 align-middle" th:text="${#temporals.format(order.placedAt, 'MM/dd/yyyy HH:mm')}">10/10/2024</td>
+            <td class="border-0 align-middle">
+                <th:block th:insert="~{fragments/order-status.html}"></th:block>
+            </td>
+            <td class="border-0 align-middle" th:text="${#numbers.formatCurrency(order.totalAmount)}">$39,99</td>
+            <td class="border-0 align-middle">
+                <th:block th:insert="~{fragments/order-payment-method.html}"></th:block>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="store-filter clearfix" th:if="${pageLinks != null}">
+<!--        <span class="store-qty">Exibindo 20-100 Orders</span>-->
+        <ul class="store-pagination">
+            <th:block th:each="pageLink : ${pageLinks}">
+                <li th:if="${pageLink.current}" class="active" th:text="${pageLink.number}">1</li>
+                <li th:unless="${pageLink.current}"><a th:href="${pageLink.link}" th:text="${pageLink.number}">1</a></li>
+            </th:block>
+            <!--            <li><a href="#"><i class="fa fa-angle-right"></i></a></li>-->
+        </ul>
+    </div>
+</div>
+<!-- End -->
+</body>
+</html>

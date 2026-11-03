@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: insights
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    placeholder-replacement: false

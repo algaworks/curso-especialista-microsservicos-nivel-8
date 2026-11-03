@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/blank}">
+
+<th:block layout:fragment="breadcrumb">
+
+</th:block>
+
+<th:block layout:fragment="content">
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="breadcrumb-tree">
+                        <li><a href="/">Home</a></li>
+                        <li class="active">products</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /BREADCRUMB -->
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <form id="productFilterForm" th:action="|/products|"  th:object="${productFilter}">
+                <!-- row -->
+                <div class="row">
+                    <!-- ASIDE -->
+                    <div id="aside" class="col-md-3">
+                        <!-- aside Widget -->
+                        <div class="aside">
+                            <h3 class="aside-title">Categories</h3>
+                            <div class="checkbox-filter">
+                                <div class="input-checkbox">
+                                    <input
+                                            name="hasDiscount"
+                                            th:checked="*{hasDiscount}"
+                                            type="checkbox" th:id="onSaleChk">
+                                    <label th:for="onSaleChk">
+                                        <span></span>
+                                        Deals
+                                    </label>
+                                </div>
+                                <div class="input-checkbox" th:each="category : ${@menuService.loadCategories()}">
+                                    <input th:value="${category.id}"
+                                           name="categoriesId"
+                                           th:checked="${#lists.contains(productFilter.categoriesIdAsList, category.id)}"
+                                           type="checkbox" th:id="|category-${category.id}|">
+                                    <label th:for="|category-${category.id}|">
+                                        <span></span>
+                                        <th:block th:text="${category.name}"></th:block>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /aside Widget -->
+
+                        <!-- aside Widget -->
+                        <div class="aside">
+                            <h3 class="aside-title">Price</h3>
+                            <div class="price-filter">
+                                <div id="price-slider"></div>
+                                <div class="input-number price-min">
+                                    <input id="price-min" type="number" th:field="*{priceFrom}">
+                                    <span class="qty-up">+</span>
+                                    <span class="qty-down">-</span>
+                                </div>
+                                <span>-</span>
+                                <div class="input-number price-max">
+                                    <input id="price-max" type="number" th:field="*{priceTo}">
+                                    <span class="qty-up">+</span>
+                                    <span class="qty-down">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /aside Widget -->
+
+                        <!-- aside Widget -->
+                        <div class="aside">
+                            <h3 class="aside-title">Term</h3>
+                            <div class="checkbox-filter">
+                                <div>
+                                    <input th:field="*{term}" class="input" placeholder="Search here">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /aside Widget -->
+                        <div class="aside">
+                            <button type="submit" class="search-btn">Search</button>
+                        </div>
+
+                        <div class="aside">
+                            <a href="/products" class="clean-btn">Clear filters</a>
+                        </div>
+                    </div>
+
+                    <!-- /ASIDE -->
+
+                    <!-- STORE -->
+                    <div id="store" class="col-md-9">
+                        <!-- store top filter -->
+                        <div class="store-filter clearfix">
+                            <div class="store-sort">
+                                <label>
+                                    Order by:
+                                    <select form="productFilterForm" class="input-select" th:field="*{sort}">
+                                        <option value="ADDED_AT,DESC">Newest</option>
+                                        <option value="SALE_PRICE,DESC">Higher price</option>
+                                        <option value="SALE_PRICE,ASC">Lowest price</option>
+                                    </select>
+                                </label>
+
+                                <label>
+                                    Items per page:
+                                    <select form="productFilterForm" class="input-select" th:field="*{size}">
+                                        <option value="6">6</option>
+                                        <option value="15">15</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                        <!-- /store top filter -->
+
+                        <!-- store products -->
+                        <div class="row">
+                            <!-- product -->
+                            <div class="col-md-4 col-xs-6" th:each="product : ${products}">
+                                <th:block th:insert="~{fragments/product-summary.html}"></th:block>
+                            </div>
+                            <!-- /product -->
+                        </div>
+                        <!-- /store products -->
+
+                        <!-- store bottom filter -->
+                        <div class="store-filter clearfix">
+                            <ul th:if="${pageLinks != null}" class="store-pagination">
+                                <th:block th:each="pageLink : ${pageLinks}">
+                                    <li th:if="${pageLink.current}" class="active" th:text="${pageLink.number}">1</li>
+                                    <li th:unless="${pageLink.current}"><a th:href="${pageLink.link}" th:text="${pageLink.number}">1</a></li>
+                                </th:block>
+                                <!--            <li><a href="#"><i class="fa fa-angle-right"></i></a></li>-->
+                            </ul>
+                        </div>
+                        <!-- /store bottom filter -->
+                    </div>
+                    <!-- /STORE -->
+                </div>
+                <!-- /row -->
+            </form>
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+</th:block>
+
+<th:block layout:fragment="javascript-extra">
+    <script>
+
+    </script>
+</th:block>
+
+</html>

@@ -1,0 +1,161 @@
+<div class="grid">
+    <ng-container *ngIf="showDashboardExtraCards">
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="dashboard-card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Monthly Orders</span>
+                        <div class="text-900 font-medium text-xl">152</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+                        <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="dashboard-card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Monthly Revenue</span>
+                        <div class="text-900 font-medium text-xl">$2.100</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-orange-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+                        <i class="pi pi-map-marker text-orange-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="dashboard-card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Customers</span>
+                        <div class="text-900 font-medium text-xl">28441</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+                        <i class="pi pi-inbox text-cyan-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="dashboard-card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Shopping Carts</span>
+                        <div class="text-900 font-medium text-xl">15</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-purple-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+                        <i class="pi pi-comment text-purple-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <div class="col-12" [ngClass]="showDashboardExtraCards ? 'xl:col-6' : 'xl:col-12'">
+        <div class="dashboard-card">
+            <h3>Recent Sales</h3>
+            <p-table [value]="orders!"
+            styleClass="p-datatable-sm p-dashboard-card"
+            [lazyLoadOnInit]="false"
+            [resizableColumns]="true"
+            columnResizeMode="expand"
+            [lazy]="true"
+            [paginator]="true"
+            [rows]="recordsPerPage"
+            [totalRecords]="totalElements"
+            [loading]="loadingOrders">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="id">Code<p-sortIcon field="id"></p-sortIcon></th>
+                <th pSortableColumn="totalItems">Total items<p-sortIcon field="totalItems"></p-sortIcon></th>
+                <th pSortableColumn="totalAmount">Total Amount<p-sortIcon field="totalAmount"></p-sortIcon></th>
+                <th pSortableColumn="placedAt">Ordered at<p-sortIcon field="placedAt"></p-sortIcon></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-order>
+            <tr>
+                <td>
+                  <a routerLink="/orders/{{order.id}}"
+                      class="aw-table-link">
+                      {{order.id}}
+                  </a>
+                </td>
+                <td>
+                    {{order.totalItems}}
+                </td>
+                <td>
+                    {{order.totalAmount}}
+                </td>
+                <td>
+                    {{order.placedAt | date}}
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+                <td [attr.colspan]="8" style="text-align: center; padding: 1em;">
+                  No results were found for this search.
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+        </div>
+        <ng-container *ngIf="showDashboardExtraCards">
+            <div class="dashboard-card">
+                <div class="flex justify-content-between align-items-center mb-5">
+                    <h3>Best Monthly Selling Products</h3>
+                </div>
+                <ul class="list-none p-0 m-0">
+                    <li class="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
+                        <div>
+                            <span class="text-900 font-medium mr-2 mb-1 md:mb-0">StellarForge D7 AMD Ryzen 9</span>
+                            <div class="mt-1 text-600">Laptops</div>
+                        </div>
+                        <div class="mt-2 md:mt-0 flex align-items-center">
+                            <span class="text-500 ml-3 font-medium">50</span>
+                        </div>
+                    </li>
+                    <li class="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
+                        <div>
+                            <span class="text-900 font-medium mr-2 mb-1 md:mb-0">AuraBook RAM DDR4 4000Mhz</span>
+                            <div class="mt-1 text-600">Hardware</div>
+                        </div>
+                        <div class="mt-2 md:mt-0 ml-0 md:ml-8 flex align-items-center">
+                            <span class="text-500 ml-3 font-medium">43</span>
+                        </div>
+                    </li>
+                    <li class="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
+                        <div>
+                            <span class="text-900 font-medium mr-2 mb-1 md:mb-0">HyperNova Pro X11 Intel Core i9, 32GB RAM</span>
+                            <div class="mt-1 text-600">Laptops</div>
+                        </div>
+                        <div class="mt-2 md:mt-0 ml-0 md:ml-8 flex align-items-center">
+                            <span class="text-500 ml-3 font-medium">32</span>
+                        </div>
+                    </li>
+                    <li class="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
+                        <div>
+                            <span class="text-900 font-medium mr-2 mb-1 md:mb-0">NebulaLink Desktop M7 Intel Core i7, 16GB RGB RAM</span>
+                            <div class="mt-1 text-600">Desktops</div>
+                        </div>
+                        <div class="mt-2 md:mt-0 ml-0 md:ml-8 flex align-items-center">
+                            <span class="text-500 ml-3 font-medium">24</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </ng-container>
+    </div>
+
+    <ng-container *ngIf="showDashboardExtraCards">
+        <div class="col-12 xl:col-6">
+            <div class="dashboard-card">
+                <h3>Sales Overview</h3>
+                <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
+            </div>
+        </div>
+    </ng-container>
+</div>

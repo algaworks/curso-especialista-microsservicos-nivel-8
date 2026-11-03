@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/blank}">
+
+<th:block layout:fragment="breadcrumb">
+
+</th:block>
+
+<th:block layout:fragment="content">
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="breadcrumb-tree">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/products">Products</a></li>
+                        <li><a th:href="|/products/${product.slug}/${product.id}|" th:text="${product.name}">Product</a></li>
+                        <li class="active">buy now</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /BREADCRUMB -->
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+
+                <div class="col-md-7">
+                    <form id="checkoutForm" th:action="@{/buy-now}" method="post"
+                          th:object="${buyNowCheckoutForm}"
+                          th:attr="data-shipping-preview-url=@{/buy-now/shipping-cost-preview}">
+                        <input type="hidden" th:field="*{productId}">
+                        <input type="hidden" th:field="*{quantity}">
+
+                        <!-- Shipping Details -->
+                        <div class="shiping-details">
+                            <div class="section-title">
+                                <h3 class="title">Shipping address</h3>
+                            </div>
+                            <div class="form-group">
+                                <input class="input" type="text" th:field="*{shippingInfo.fullName}" th:errorclass="error" placeholder="Full name">
+                            </div>
+                            <div class="form-group">
+                                <input class="input" data-mask="000-000-0000" type="text" th:field="*{shippingInfo.phone}" th:errorclass="error" placeholder="Phone">
+                            </div>
+                            <div class="form-group">
+                                <input class="input" data-mask="000-00-0000" type="text" th:field="*{shippingInfo.document}" th:errorclass="error" placeholder="Document">
+                            </div>
+                            <div class="form-group">
+                                <input class="input" data-mask="00000" type="text" th:field="*{shippingInfo.address.zipCode}" th:errorclass="error" placeholder="Zipcode">
+                            </div>
+                            <div class="form-group">
+                                <input class="input" type="text" th:field="*{shippingInfo.address.street}" th:errorclass="error" placeholder="Street">
+                            </div>
+                            <div class="form-group">
+                                <input class="input" type="text" th:field="*{shippingInfo.address.number}" th:errorclass="error" placeholder="Number">
+                            </div>
+                            <div class="form-group">
+                                <input class="input" type="text" th:field="*{shippingInfo.address.complement}" th:errorclass="error" placeholder="Complement">
+                            </div>
+                            <div class="form-group">
+                                <input class="input" type="text" th:field="*{shippingInfo.address.neighborhood}" th:errorclass="error" placeholder="Neighborhood">
+                            </div>
+                            <div class="form-group">
+                                <input class="input" type="text" th:field="*{shippingInfo.address.state}" th:errorclass="error" placeholder="State">
+                            </div>
+                            <div class="form-group">
+                                <input class="input" type="text" th:field="*{shippingInfo.address.city}" th:errorclass="error" placeholder="City">
+                            </div>
+                        </div>
+                        <!-- /Shipping Details -->
+
+                        <!-- Billing Details -->
+                        <div class="billing-details">
+                            <div class="section-title">
+                                <h3 class="title">Billing address</h3>
+                            </div>
+                            <div class="input-checkbox">
+                                <input type="checkbox" id="billToDifferentAddress"
+                                       th:checked="*{billToDifferentAddress}" name="billToDifferentAddress">
+                                <label for="billToDifferentAddress">
+                                    <span></span>
+                                    Bill to a different address?
+                                </label>
+                                <div class="caption">
+                                    <div class="form-group">
+                                        <input class="input" type="text" th:field="*{billingInfo.fullName}" th:errorclass="error" placeholder="Full name">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" data-mask="000-000-0000" type="text" th:field="*{billingInfo.phone}" th:errorclass="error" placeholder="Phone">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" data-mask="000-00-000" type="text" th:field="*{billingInfo.document}" th:errorclass="error" placeholder="Document">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" data-mask="00000" type="text" th:field="*{billingInfo.address.zipCode}" th:errorclass="error" placeholder="Zipcode">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" type="text" th:field="*{billingInfo.address.street}" th:errorclass="error" placeholder="Street">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" type="text" th:field="*{billingInfo.address.number}" th:errorclass="error" placeholder="Number">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" type="text" th:field="*{billingInfo.address.complement}" th:errorclass="error" placeholder="Complement">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" type="text" th:field="*{billingInfo.address.neighborhood}" th:errorclass="error" placeholder="Neighborhood">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" type="text" th:field="*{billingInfo.address.state}" th:errorclass="error" placeholder="State">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" type="text" th:field="*{billingInfo.address.city}" th:errorclass="error" placeholder="City">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Billing Details -->
+                    </form>
+                </div>
+
+                <!-- Order Details -->
+                <div class="col-md-5 order-details">
+                    <th:block th:insert="~{fragments/messages-by-type.html}"></th:block>
+                    <div class="section-title text-center">
+                        <h3 class="title">Order Summary</h3>
+                    </div>
+                    <div class="order-summary">
+                        <div class="order-col">
+                            <div><strong>Product</strong></div>
+                            <div><strong>Price</strong></div>
+                        </div>
+                        <div class="order-products">
+                            <div class="order-col">
+                                <div th:text="|${buyNowCheckoutForm.quantity}x ${product.name}|">1x Product Name Goes Here</div>
+                                <div th:text="${#numbers.formatCurrency(unitPrice)}">$980.00</div>
+                            </div>
+                        </div>
+                        <div class="order-col">
+                            <div>Subtotal</div>
+                            <div th:text="${#numbers.formatCurrency(subtotal)}">$980.00</div>
+                        </div>
+                        <div class="order-col">
+                            <div>Shipping</div>
+                            <div>
+                                <strong class="js-shipping-cost">Calculating...</strong>
+                                <small class="js-shipping-cost-status hidden"></small>
+                            </div>
+                        </div>
+                        <div class="order-col">
+                            <div><strong>TOTAL</strong></div>
+                            <div>
+                                <strong class="order-total js-order-total"
+                                        th:attr="data-subtotal=${#numbers.formatCurrency(subtotal)}"
+                                        th:text="${#numbers.formatCurrency(subtotal)}">$980.00</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="payment-method" th:object="${buyNowCheckoutForm}">
+                        <div class="input-radio">
+                            <input form="checkoutForm" type="radio" th:field="*{paymentMethod}" value="GATEWAY_BALANCE" id="payment-1">
+                            <label for="payment-1">
+                                <span></span>
+                                FastPay Account Balance
+                            </label>
+                        </div>
+                        <div class="input-radio">
+                            <input form="checkoutForm" type="radio" th:field="*{paymentMethod}" value="CREDIT_CARD" id="payment-2">
+                            <label for="payment-2">
+                                <span></span>
+                                Credit Card
+                            </label>
+                            <div class="caption">
+                                <p th:if="${#lists.isEmpty(creditCards)}" class="js-credit-card-empty">
+                                    You do not have saved credit cards yet.
+                                </p>
+                                <select form="checkoutForm" name="creditCardId" class="input js-credit-card-list js-credit-card-select"
+                                        data-mode="checkout" th:field="*{creditCardId}">
+                                    <option value="">Choose a credit card</option>
+                                    <option th:each="creditCard: ${creditCards}" th:value="${creditCard.id}"
+                                            th:text="|${creditCard.brand} ****-${creditCard.lastNumbers} - ${creditCard.expMonth}/${creditCard.expYear}|">
+                                        Visa ****-1234 - 12/2028
+                                    </option>
+                                </select>
+                                <button type="button" class="secondary-btn btn btn-default js-open-credit-card-modal"
+                                        data-toggle="modal" data-target="#creditCardRegistrationModal">
+                                    Add new card
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" form="checkoutForm" class="primary-btn order-submit">Place order</button>
+                    <a th:href="|/products/${product.slug}/${product.id}|" class="secondary-btn back-to-shopping-link btn btn-default md-btn-flat mt-2 mr-2">Back to product</a>
+                </div>
+                <!-- /Order Details -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+
+    <th:block th:insert="~{fragments/credit-card-registration-modal.html}"></th:block>
+</th:block>
+
+<th:block layout:fragment="javascript-extra">
+
+</th:block>
+
+</html>

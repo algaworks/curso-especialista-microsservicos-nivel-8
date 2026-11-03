@@ -1,0 +1,103 @@
+openapi: 3.0.4
+
+info:
+  title: AlgaShop - Insights API
+  version: "1.0"
+
+servers:
+  - description: Development
+    url: "http://localhost:8086"
+  - description: Production
+    url: "https://api.algashop.com"
+
+paths:
+  /api/v1/insights/top-selling-products:
+    get:
+      summary: Top 15 best-selling products
+      tags:
+        - Insights
+      parameters:
+        - schema:
+            type: string
+            pattern: '^\d{4}-(0[1-9]|1[0-2])$'
+          name: yearMonth
+          in: query
+          required: true
+          example: "2026-09"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 15
+                items:
+                  $ref: "#/components/schemas/TopSellingProduct"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+components:
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+  schemas:
+    ProblemDetail:
+      title: Problem
+      type: object
+      required:
+        - status
+        - type
+        - title
+        - instance
+      properties:
+        status:
+          type: integer
+          example: 400
+        type:
+          type: string
+          example: "/errors/bad-request"
+        title:
+          type: string
+          example: Bad Request
+        instance:
+          type: string
+          example: "/api/v1/insights/top-selling-products"
+        detail:
+          type: string
+          example: Invalid request
+        fields:
+          type: object
+    TopSellingProduct:
+      type: object
+      required:
+        - productId
+        - productName
+        - categoryName
+        - quantity
+        - revenue
+      properties:
+        productId:
+          type: string
+          format: uuid
+          example: "2eea613a-3a11-46dd-95ee-2678c295559e"
+        productName:
+          type: string
+          description: Name of the product in the catalog
+          example: "StellarForge D7 AMD Ryzen 9"
+        categoryName:
+          type: string
+          description: Name of the product category in the catalog
+          example: "Laptops"
+        quantity:
+          type: integer
+          format: int64
+          description: Units sold in the period
+          example: 164
+        revenue:
+          type: number
+          description: Sum of the total amount of the items sold in the period
+          example: 820000.00

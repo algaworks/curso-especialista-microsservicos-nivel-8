@@ -1,0 +1,220 @@
+spring:
+  config:
+    import:
+      - aws-secretsmanager:/secret/algashop/authorization-server/database?prefix=auth.secrets.datasource.
+      - aws-secretsmanager:/config/algashop/authorization-server/rsa-key?prefix=jwk.
+      - aws-parameterstore:/config/algashop/authorization-server?prefix=auth.params
+      - aws-parameterstore:/config/algashop/shared?prefix=shared.params
+  cloud:
+    aws:
+      credentials:
+        access-key: test
+        secret-key: test
+      region:
+        static: us-east-1
+      endpoint: http://algashop-localstack:4566
+  mail:
+    host: ${auth.params.mail.host}
+    port: ${auth.params.mail.port}
+  session:
+    store-type: jdbc
+  datasource:
+    url: ${auth.params.datasource.url}
+    username: ${auth.secrets.datasource.username}
+    password: ${auth.secrets.datasource.password}
+  jpa:
+    show-sql: ${auth.params.jpa.show-sql}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration,classpath:db/testdata
+    user: ${auth.secrets.datasource.username}
+    password: ${auth.secrets.datasource.password}
+    url: ${auth.params.datasource.url}
+  security:
+    oauth2:
+      authorizationserver:
+        issuer: ${shared.params.auth-server-url}
+        client:
+          algashop-test-client:
+            registration:
+              client-id: algashop-test
+              authorization-grant-types:
+                - client_credentials
+              client-authentication-methods:
+                - client_secret_basic
+              client-secret: ${auth.params.clients.algashop-test.secret}
+              scopes:
+                - products:read
+                - products:write
+                - products:stock:write
+                - categories:read
+                - categories:write
+                - invoices:read
+                - invoices:write
+                - credit-cards:read
+                - credit-cards:write
+                - orders:read
+                - orders:write
+                - customers:read
+                - customers:write
+                - shopping-carts:read
+                - shopping-carts:write
+                - users:read
+                - users:write
+                - emails:send
+                - email-templates:read
+                - email-templates:write
+                - metrics:read
+            token:
+              access-token-time-to-live: 1h
+              access-token-format: self-contained # JWT
+          algashop-ordering-service-client:
+            registration:
+              client-id: algashop-ordering-service
+              authorization-grant-types:
+                - client_credentials
+              client-authentication-methods:
+                - client_secret_basic
+              client-secret: ${auth.params.clients.algashop-ordering-service.secret}
+              scopes:
+                - products:read
+            token:
+              access-token-time-to-live: 1h
+              access-token-format: self-contained # JWT
+          algashop-notifications-service-client:
+            registration:
+              client-id: algashop-notifications-service
+              authorization-grant-types:
+                - client_credentials
+              client-authentication-methods:
+                - client_secret_basic
+              client-secret: ${auth.params.clients.algashop-notifications-service.secret}
+              scopes:
+                - emails:send
+                - email-templates:read
+                - email-templates:write
+            token:
+              access-token-time-to-live: 1h
+              access-token-format: self-contained # JWT
+          algashop-ecommerce-web-client:
+            registration:
+              client-id: algashop-ecommerce-web
+              client-secret: ${auth.params.clients.algashop-ecommerce-web.secret}
+              client-name: AlgaShop Ecommerce
+              authorization-grant-types:
+                - authorization_code
+                - refresh_token
+              client-authentication-methods:
+                - client_secret_basic
+              redirect-uris: ${auth.params.clients.algashop-ecommerce-web.redirect-uris}
+              post-logout-redirect-uris: ${auth.params.clients.algashop-ecommerce-web.post-logout-redirect-uris}
+              scopes:
+                - credit-cards:read
+                - credit-cards:write
+                - orders:read
+                - orders:write
+                - customers:read
+                - customers:write
+                - shopping-carts:read
+                - shopping-carts:write
+                - invoices:read
+                - openid
+            require-authorization-consent: false
+            require-proof-key: false #PKCE
+            token:
+              access-token-time-to-live: 1h
+              authorization-code-time-to-live: 10m
+              refresh-token-time-to-live: 1h
+              reuse-refresh-tokens: false
+          algashop-ecommerce-m2m-client:
+            registration:
+              client-id: algashop-ecommerce-m2m
+              authorization-grant-types:
+                - client_credentials
+              client-authentication-methods:
+                - client_secret_basic
+              client-secret: ${auth.params.clients.algashop-ecommerce-m2m.secret}
+              scopes:
+                - products:read
+                - categories:read
+                - users:write
+                - shipping-costs:preview
+            token:
+              access-token-time-to-live: 1h
+          algashop-admin-web-client:
+            registration:
+              client-id: algashop-admin-web
+              client-name: AlgaShop Admin
+              authorization-grant-types:
+                - authorization_code
+              client-authentication-methods:
+                - none # Client público sem autenticação
+              redirect-uris: ${auth.params.clients.algashop-admin-web.redirect-uris}
+              post-logout-redirect-uris: ${auth.params.clients.algashop-admin-web.post-logout-redirect-uris}
+              scopes:
+                - products:read
+                - products:write
+                - products:stock:write
+                - categories:read
+                - categories:write
+                - invoices:read
+                - orders:read
+                - customers:read
+                - shopping-carts:read
+                - users:read
+                - users:write
+                - metrics:read
+                - openid
+            require-authorization-consent: false
+            require-proof-key: true #PKCE
+            token:
+              access-token-time-to-live: 1h
+              authorization-code-time-to-live: 5m
+
+algashop:
+  user-account:
+    token:
+      activation-ttl: PT24H
+      password-reset-ttl: PT2H
+    mail:
+      from: ${auth.params.user-account.mail.from}
+      password-change-url: ${auth.params.user-account.password-change-url}
+  security:
+    defaultRedirectUri: ${auth.params.security.defaultRedirectUri}
+    cors:
+      allowedOrigins: ${auth.params.security.cors.allowedOrigins}
+    cookie:
+      secure: ${auth.params.security.cookie.secure}
+      sameSite: ${auth.params.security.cookie.sameSite}
+      domainName: ${auth.params.security.cookie.domainName}
+    csp:
+      policyDirectives: ${auth.params.security.csp.policyDirectives}
+logging:
+  level:
+    org.springframework.security: ${auth.params.logging.security-level}
+
+management:
+  info:
+    env.enabled: true
+  health:
+    redis:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env
+  endpoint:
+    health:
+      show-details: always
+    env:
+      show-values: always
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${shared.params.service-registry-url}/eureka
+    healthcheck:
+      enabled: true
+  instance:
+    instanceId: ${random.uuid}
+    prefer-ip-address: true

@@ -1,0 +1,8 @@
+<app-header></app-header>
+<app-menu></app-menu>
+<div class="ng-content" [ngClass]="{'aw-hidden-menu-content': !isMenuVisible}">
+  <div class="ng-content-inner">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+<app-footer style="margin-top: auto;"></app-footer>

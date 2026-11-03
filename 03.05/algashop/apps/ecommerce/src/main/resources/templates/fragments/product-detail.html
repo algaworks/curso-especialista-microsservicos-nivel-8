@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Product main img -->
+<div class="col-md-5 col-md-push-2">
+    <div id="product-main-img">
+        <div class="product-preview" th:each="image : ${images}">
+            <img th:src="${image.url}" alt="">
+        </div>
+        <div class="product-preview" th:if="${#lists.isEmpty(images)}">
+            <img th:src="@{/img/no-picture.png}" alt="">
+        </div>
+    </div>
+</div>
+<!-- /Product main img -->
+
+<!-- Product thumb imgs -->
+<div class="col-md-2  col-md-pull-5">
+    <div id="product-imgs">
+        <div class="product-preview" th:each="image : ${images}">
+            <img th:src="${image.url}" alt="">
+        </div>
+    </div>
+</div>
+<!-- /Product thumb imgs -->
+
+<!-- Product details -->
+<div class="col-md-5">
+    <div class="product-details">
+        <th:block th:insert="~{fragments/messages-by-type.html}"></th:block>
+        <h2 class="product-name" th:text="${product.name}">product name goes here</h2>
+        <div>
+            <h3 th:if="${product.hasDiscount}" class="product-price">
+                <th:block th:text="${#numbers.formatCurrency(product.salePrice)}"></th:block>
+                <del class="product-old-price" th:text="${#numbers.formatCurrency(product.regularPrice)}">$990.00</del>
+            </h3>
+            <h3 th:if="${!product.hasDiscount}" class="product-price" th:text="${#numbers.formatCurrency(product.regularPrice)}"></h3>
+            <span th:if="${product.inStock}" class="product-available">In stock</span>
+            <span th:if="${!product.inStock}" class="product-available">Out of stock</span>
+        </div>
+        <p style="white-space: pre-line" th:text="${product.description}">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut</p>
+        <form th:if="${product.inStock}"
+              class="js-product-detail-action-form"
+              th:attr="data-cart-action=|/shopping-cart/add/${product.slug}/${product.id}|,
+                       data-buy-now-action=@{/buy-now/{productId}(productId=${product.id})}">
+            <input class="js-product-csrf-token" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="add-to-cart">
+                <div class="qty-label">
+                    Quantity:
+                    <div class="input-number">
+                        <input name="quantity" type="number" value="1" min="1" max="1000">
+                        <span class="qty-up">+</span>
+                        <span class="qty-down">-</span>
+                    </div>
+                </div>
+                <div class="product-detail-actions">
+                    <button type="submit" class="add-to-cart-btn js-product-action-submit" data-action-type="cart">
+                        <i class="fa fa-shopping-cart"></i>Add to cart
+                    </button>
+                    <button type="submit" class="add-to-cart-btn js-product-action-submit" data-action-type="buy-now">
+                        <i class="fa fa-bolt"></i>Buy Now
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <ul class="product-links">
+            <li>Category:</li>
+            <li><a th:href="|/products?categoryId=${product.category.id}|" th:text="${product.category.name}">Headphones</a></li>
+        </ul>
+
+        <ul class="product-links">
+            <li>Share:</li>
+            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+            <li><a href="#"><i class="fa fa-envelope"></i></a></li>
+        </ul>
+
+    </div>
+</div>
+<!-- /Product details -->
+
+</body>
+</html>

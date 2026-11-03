@@ -1,0 +1,106 @@
+spring:
+  config:
+    import:
+      - aws-secretsmanager:/secret/algashop/product-catalog/redis-password?prefix=catalog.secrets.
+      - aws-parameterstore:/config/algashop/product-catalog?prefix=catalog.params
+      - aws-parameterstore:/config/algashop/shared?prefix=shared.params
+  cloud:
+    aws:
+      credentials:
+        access-key: test
+        secret-key: test
+      region:
+        static: us-east-1
+      endpoint: http://algashop-localstack:4566
+      s3:
+        enabled: true
+        path-style-access-enabled: true
+  cache:
+    type: redis
+  mongodb:
+    uri: ${catalog.params.mongodb.uri}
+  data:
+    redis:
+      host: ${catalog.params.redis.host}
+      port: ${catalog.params.redis.port}
+      password: ${catalog.secrets.redis-password}
+      database: ${catalog.params.redis.database}
+      timeout: ${catalog.params.redis.timeout}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${shared.params.auth-server-url}
+  kafka:
+    bootstrap-servers: algashop-kafka-1:9092,algashop-kafka-2:9093,algashop-kafka-3:9094
+    properties:
+      spring.json.type.mapping:
+        ProductCatalog.ProductDelistedIntegrationEvent:com.algaworks.algashop.product.catalog.application.product.event.ProductDelistedIntegrationEvent,
+        ProductCatalog.ProductListedIntegrationEvent:com.algaworks.algashop.product.catalog.application.product.event.ProductListedIntegrationEvent,
+        ProductCatalog.ProductAddedIntegrationEvent:com.algaworks.algashop.product.catalog.application.product.event.ProductAddedIntegrationEvent,
+        ProductCatalog.ProductPlacedOnSaleIntegrationEvent:com.algaworks.algashop.product.catalog.application.product.event.ProductPlacedOnSaleIntegrationEvent,
+        ProductCatalog.ProductRestockedIntegrationEvent:com.algaworks.algashop.product.catalog.application.product.event.ProductRestockedIntegrationEvent,
+        ProductCatalog.ProductSoldOutIntegrationEvent:com.algaworks.algashop.product.catalog.application.product.event.ProductSoldOutIntegrationEvent,
+        ProductCatalog.ProductPriceChangedIntegrationEvent:com.algaworks.algashop.product.catalog.application.product.event.ProductPriceChangedIntegrationEvent,
+        ProductCatalog.ProductPriceChangedV2IntegrationEvent:com.algaworks.algashop.product.catalog.application.product.event.ProductPriceChangedV2IntegrationEvent,
+        Stock.ReserveStockIntegrationCommand:com.algaworks.algashop.product.catalog.application.stock.command.ReserveStockIntegrationCommand,
+        Stock.StockReservationConfirmedIntegrationReply:com.algaworks.algashop.product.catalog.application.stock.reply.StockReservationConfirmedIntegrationReply,
+        Stock.StockReservationRejectedIntegrationReply:com.algaworks.algashop.product.catalog.application.stock.reply.StockReservationRejectedIntegrationReply
+    admin:
+      fail-fast: true
+      auto-create: true
+      modify-topic-configs: false
+    producer:
+      acks: all # min insync = 2
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+      #retries: 100
+      properties:
+        enable.idempotence: true
+        #retry.backoff.ms: 100
+        #retry.backoff.max.ms: 1000
+        request.timeout.ms: 5000
+        delivery.timeout.ms: 30000
+        max.block.ms: 5000
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+        spring.json.trusted.packages: com.algaworks.algashop.*
+        spring.json.key.default.type: java.lang.String
+        spring.json.value.default.type: java.lang.String
+        spring.json.value.type.method: com.algaworks.algashop.product.catalog.infrastructure.kafka.KafkaConsumerTypeIdIdentifier.readType
+
+logging:
+  level:
+    com.netflix.discovery.DiscoveryClient: OFF
+    com.netflix.discovery: OFF
+    com.netflix.eureka: OFF
+    org.apache.kafka: OFF
+    org.springframework.kafka: OFF
+
+algashop:
+  data-load:
+    enabled: true
+    auto-delete: true
+  mapping:
+    image-storage-url: ${catalog.params.storage.image-storage-url}
+  storage:
+    s3:
+      bucket-name: ${catalog.params.storage.bucket-name}
+  messaging:
+    kafka:
+      product-event-topic-name: product-catalog.product.events
+      stock-commands-topic-name: product-catalog.stock.commands
+      stock-commands-consumer-group: product-catalog.stock-commands
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${shared.params.service-registry-url}/eureka
+    healthcheck:
+      enabled: true
+  instance:
+    instanceId: ${random.uuid}
+    prefer-ip-address: true

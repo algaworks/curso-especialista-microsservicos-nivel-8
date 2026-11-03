@@ -1,0 +1,317 @@
+<div class="grid" style="margin-bottom: 0.5em;">
+    <div class="col-12">
+        <div class="aw-page-options-center">
+            <h1 class="aw-card-title">Order {{orderCode}}</h1>
+            <div class="p-toolbar-group-right">
+                <button pButton pRipple
+                        type="button" pTooltip="Voltar"
+                        tooltipPosition="bottom" routerLink="/orders"
+                        icon="pi pi-arrow-left"
+                        class="aw-top-actions-button p-button-secondary p-button-text"></button>
+                <button pButton pRipple
+                        type="button" pTooltip="Mais opções"
+                        tooltipPosition="bottom"
+                        (click)="menu.toggle($event)"
+                        icon="pi pi-ellipsis-h"
+                        class="aw-top-actions-button p-button-secondary p-button-text"></button>
+                <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 md:col-12 lg:col-12">
+        <p-tabView>
+            <p-tabPanel header="Summary">
+                <div class="aw-flex-card-body" *ngIf="!loading">
+                    <div style="width: 340px;">
+                        <ul class="aw-card-label-group aw-card-label-group-md">
+                            <li>
+                                <app-label-with-default
+                                    label="Customer:" [value]="(order?.customer?.firstName || '') + ' ' + (order?.customer?.lastName || '')">
+                                </app-label-with-default>
+                            </li>
+                            <li>
+                                <app-label-with-default
+                                    label="Total amount:" [value]="order?.totalAmount |  currency: 'USD'">
+                                </app-label-with-default>
+                            </li>
+                            <li>
+                              <app-label-with-default label="Status:">
+                                <app-order-status-badge [status]="order?.status"/>
+                              </app-label-with-default>
+                            </li>
+                            <li>
+                                <app-label-with-default
+                                    label="Payment method:" [value]="enumPaymentMethodToValue(order!.paymentMethod)">
+                                </app-label-with-default>
+                            </li>
+                            <li>
+                              <app-label-with-default
+                                  label="Ordered at:" [value]="order?.placedAt | date">
+                              </app-label-with-default>
+                          </li>
+                        </ul>
+                    </div>
+                    <div style="width: 340px;">
+                        <ul class="aw-card-label-group aw-card-label-group-md">
+                            <li>
+                                <app-label-with-default
+                                    label="Ready at:" [value]="order?.readyAt | date">
+                                </app-label-with-default>
+                            </li>
+                            <li>
+                                <app-label-with-default
+                                    label="Canceled at:" [value]="order?.canceledAt | date">
+                                </app-label-with-default>
+                            </li>
+                            <li>
+                                <app-label-with-default
+                                    label="Paid at:" [value]="order?.paidAt | date">
+                                </app-label-with-default>
+                            </li>
+                            <li>
+                                <app-label-with-default
+                                    label="Credit card:" [value]="order?.creditCardId">
+                                </app-label-with-default>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="aw-detail-card-body" *ngIf="loading">
+                    <div>
+                        <ul class="aw-card-label-group aw-card-label-group-xss ">
+                            <li>
+                                <p-skeleton width="30rem" styleClass="p-mb-2"></p-skeleton>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel header="Shipping">
+                    <ul class="aw-card-label-group aw-card-label-group-md">
+                        <li>
+                          <app-label-with-default
+                              label="Shipping name:" [value]="(order?.shipping?.recipient?.firstName || '') + ' ' + (order?.shipping?.recipient?.lastName || '')">
+                          </app-label-with-default>
+                      </li>
+                      <li>
+                          <app-label-with-default
+                              label="Shipping document:" [value]="order?.shipping?.recipient?.document">
+                          </app-label-with-default>
+                      </li>
+                      <li>
+                          <app-label-with-default
+                              label="Shipping phone:" [value]="order?.shipping?.recipient?.phone">
+                          </app-label-with-default>
+                      </li>
+                      <li>
+                          <app-label-with-default
+                              label="Shipping cost:" [value]="order?.shipping?.cost | currency: 'USD'">
+                          </app-label-with-default>
+                      </li>
+                      <li>
+                          <app-label-with-default
+                              label="Expected date:" [value]="order?.shipping?.expectedDate | date">
+                          </app-label-with-default>
+                      </li>
+                      <li>
+                          <app-label-with-default
+                              label="Street:" [value]="order?.shipping?.address?.street">
+                          </app-label-with-default>
+                      </li>
+                      <li>
+                          <app-label-with-default
+                              label="Number:" [value]="order?.shipping?.address?.number">
+                          </app-label-with-default>
+                      </li>
+                      <li>
+                          <app-label-with-default
+                              label="Complement:" [value]="order?.shipping?.address?.complement">
+                          </app-label-with-default>
+                      </li>
+                      <li>
+                          <app-label-with-default
+                              label="Neighborhood:" [value]="order?.shipping?.address?.neighborhood">
+                          </app-label-with-default>
+                      </li>
+                      <li>
+                          <app-label-with-default
+                              label="City:" [value]="order?.shipping?.address?.city">
+                          </app-label-with-default>
+                      </li>
+                      <li>
+                          <app-label-with-default
+                              label="State:" [value]="order?.shipping?.address?.state">
+                          </app-label-with-default>
+                      </li>
+                      <li>
+                          <app-label-with-default
+                              label="Zip code:" [value]="order?.shipping?.address?.zipCode">
+                          </app-label-with-default>
+                      </li>
+                    </ul>
+            </p-tabPanel>
+            <p-tabPanel header="Billing">
+                <ul class="aw-card-label-group aw-card-label-group-md">
+                    <li>
+                        <app-label-with-default
+                            label="Billing name:" [value]="(order?.billing?.firstName || '') + ' ' + (order?.billing?.lastName || '')">
+                        </app-label-with-default>
+                    </li>
+                    <li>
+                        <app-label-with-default
+                            label="Billing Email:" [value]="order?.billing?.email">
+                        </app-label-with-default>
+                    </li>
+                    <li>
+                        <app-label-with-default
+                            label="Billing Document:" [value]="order?.billing?.document">
+                        </app-label-with-default>
+                    </li>
+                    <li>
+                        <app-label-with-default
+                            label="Billing Phone:" [value]="order?.billing?.phone">
+                        </app-label-with-default>
+                    </li>
+                    <li>
+                        <app-label-with-default
+                            label="Street:" [value]="order?.billing?.address?.street">
+                        </app-label-with-default>
+                    </li>
+                    <li>
+                        <app-label-with-default
+                            label="Number:" [value]="order?.billing?.address?.number">
+                        </app-label-with-default>
+                    </li>
+                    <li>
+                        <app-label-with-default
+                            label="Complement:" [value]="order?.billing?.address?.complement">
+                        </app-label-with-default>
+                    </li>
+                    <li>
+                        <app-label-with-default
+                            label="Neighborhood:" [value]="order?.billing?.address?.neighborhood">
+                        </app-label-with-default>
+                    </li>
+                    <li>
+                        <app-label-with-default
+                            label="City:" [value]="order?.billing?.address?.city">
+                        </app-label-with-default>
+                    </li>
+                    <li>
+                        <app-label-with-default
+                            label="State:" [value]="order?.billing?.address?.state">
+                        </app-label-with-default>
+                    </li>
+                    <li>
+                        <app-label-with-default
+                            label="Zip code:" [value]="order?.billing?.address?.zipCode">
+                        </app-label-with-default>
+                    </li>
+                </ul>
+            </p-tabPanel>
+            <p-tabPanel header="Invoice">
+                <div class="aw-detail-card-body" *ngIf="loadingInvoice">
+                    <ul class="aw-card-label-group aw-card-label-group-xss">
+                        <li>
+                            <p-skeleton width="30rem" styleClass="p-mb-2"></p-skeleton>
+                        </li>
+                    </ul>
+                </div>
+                <div class="aw-detail-card-body" *ngIf="!loadingInvoice && invoiceNotFound">
+                    <app-label-with-default
+                        label="Invoice:" value="No invoice registered for this order.">
+                    </app-label-with-default>
+                </div>
+                <div *ngIf="!loadingInvoice && invoice">
+                    <div class="aw-flex-card-body">
+                        <div style="width: 340px;">
+                            <ul class="aw-card-label-group aw-card-label-group-md">
+                              <li>
+                                <app-label-with-default label="Payer:" [value]="invoice.payer.fullName"></app-label-with-default>
+                              </li>
+                                <li>
+                                    <app-label-with-default label="Status:" [value]="invoice.status"></app-label-with-default>
+                                </li>
+                                <li>
+                                    <app-label-with-default label="Total amount:" [value]="invoice.totalAmount | currency: 'USD'"></app-label-with-default>
+                                </li>
+                                <li>
+                                    <app-label-with-default label="Issued at:" [value]="invoice.issuedAt | date"></app-label-with-default>
+                                </li>
+                                <li>
+                                    <app-label-with-default label="Expires at:" [value]="invoice.expiresAt | date"></app-label-with-default>
+                                </li>
+                            </ul>
+                        </div>
+                        <div style="width: 340px;">
+                            <ul class="aw-card-label-group aw-card-label-group-md">
+
+                                <li>
+                                    <app-label-with-default label="Payer email:" [value]="invoice.payer.email"></app-label-with-default>
+                                </li>
+                                <li>
+                                    <app-label-with-default label="Payment method:" [value]="enumInvoicePaymentMethodToValue(invoice.paymentSettings?.method)"></app-label-with-default>
+                                </li>
+                                <li>
+                                    <app-label-with-default label="Gateway code:" [value]="invoice.paymentSettings?.gatewayCode"></app-label-with-default>
+                                </li>
+                                <li>
+                                    <app-label-with-default label="Paid at:" [value]="invoice.paidAt | date"></app-label-with-default>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+    <div class="col-12">
+        <div class="aw-page-options-center">
+            <h2 class="aw-card-title">Items</h2>
+        </div>
+    </div>
+    <div class="col-12 md:col-12 lg:col-12">
+        <p-table [value]="orderItems!"
+                styleClass="p-datatable-sm p-card"
+                [lazyLoadOnInit]="false"
+                [resizableColumns]="true"
+                columnResizeMode="expand"
+                [lazy]="true"
+                [paginator]="false"
+                [loading]="loading">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="productName">Name<p-sortIcon field="productName"></p-sortIcon></th>
+                <th pSortableColumn="price">Price<p-sortIcon field="price"></p-sortIcon></th>
+                <th pSortableColumn="quantity">Quantity<p-sortIcon field="quantity"></p-sortIcon></th>
+                <th pSortableColumn="totalAmount">Total amount<p-sortIcon field="totalAmount"></p-sortIcon></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td>
+                    {{item.productName}}
+                </td>
+                <td>
+                    {{item.price | currency: 'USD'}}
+                </td>
+                <td>
+                    {{item.quantity}}
+                </td>
+                <td>
+                    {{item.totalAmount | currency: 'USD'}}
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+                <td [attr.colspan]="8" style="text-align: center; padding: 1em;">
+                    No items to display.
+                </td>
+            </tr>
+        </ng-template>
+        </p-table>
+    </div>
+</div>
+<router-outlet></router-outlet>

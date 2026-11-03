@@ -1,0 +1,1 @@
+alter table "order" add column shipping_cost numeric(38, 2);

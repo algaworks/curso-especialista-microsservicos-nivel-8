@@ -1,0 +1,15 @@
+<p-sidebar [visible]="true" position="left" [showCloseIcon]="false" [transitionOptions]="'0ms'"
+           [styleClass]="menuClass" [modal]="false">
+    <ul class="aw-sidebar-content">
+        <ng-template #recursiveList let-list>
+            <li *ngFor="let menu of list">
+                <a routerLinkActive="active" routerLink="{{menu.routerLink}}" 
+                   pTooltip="{{menu.label}}"  [tooltipDisabled]="isMenuVisible">
+                    <i [ngClass]="menu.icon"></i> 
+                    <span *ngIf="isMenuVisible">{{menu.label}}</span>
+                </a>
+            </li>
+        </ng-template>
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: items }"></ng-container>
+    </ul>
+</p-sidebar>

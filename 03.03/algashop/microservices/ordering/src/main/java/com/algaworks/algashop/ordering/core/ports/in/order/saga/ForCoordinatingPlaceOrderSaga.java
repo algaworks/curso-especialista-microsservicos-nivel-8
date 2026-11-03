@@ -1,0 +1,11 @@
+package com.algaworks.algashop.ordering.core.ports.in.order.saga;
+
+import java.util.UUID;
+
+public interface ForCoordinatingPlaceOrderSaga {
+	void start(String rawOrderId);
+	void onInvoicePaid(UUID sagaId);
+	void onStockReservationConfirmed(UUID sagaId);
+	void onInvoiceCanceled(UUID sagaId);
+	void onStockReservationRejected(UUID sagaId);
+}

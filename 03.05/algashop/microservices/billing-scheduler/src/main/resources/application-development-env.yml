@@ -1,0 +1,25 @@
+spring:
+  config:
+    import:
+      - aws-secretsmanager:/secret/algashop/billing-scheduler/database?prefix=scheduler.secrets.datasource.
+      - aws-secretsmanager:/secret/algashop/billing-scheduler/fastpay-token?prefix=scheduler.secrets.
+      - aws-parameterstore:/config/algashop/billing-scheduler?prefix=scheduler.params
+  cloud:
+    aws:
+      credentials:
+        access-key: test
+        secret-key: test
+      region:
+        static: us-east-1
+      endpoint: http://algashop-localstack:4566
+  datasource:
+    url: ${scheduler.params.datasource.url}
+    username: ${scheduler.secrets.datasource.username}
+    password: ${scheduler.secrets.datasource.password}
+
+algashop:
+  integrations:
+    payment:
+      fastpay:
+        hostname: ${scheduler.params.fastpay.hostname}
+        private-token: ${scheduler.secrets.fastpay-token}

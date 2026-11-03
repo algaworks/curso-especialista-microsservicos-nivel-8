@@ -1,0 +1,10 @@
+server:
+  port: 9080
+
+algashop:
+  features:
+    home-bff-enabled: true
+
+spring:
+  application:
+    name: algashop-ecommerce

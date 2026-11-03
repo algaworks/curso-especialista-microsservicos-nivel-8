@@ -1,0 +1,87 @@
+<h1 class="aw-card-title" >
+    <ng-container *ngIf="!isEditing()">
+        New product
+    </ng-container>
+    <ng-container *ngIf="isEditing()">
+        Editing product
+    </ng-container>
+</h1>
+<p-card class="aw-card-no-padding">
+    <form [formGroup]="form!" (ngSubmit)="save()" class="aw-form">
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-6">
+                <label>Name</label>
+                <input pInputText type="text"
+                        formControlName="name"
+                        class="form-control">
+                <app-validation-message
+                        [control]="form?.get('name')"
+                        error="required"
+                        text="Name is required."/>
+            </div>
+            <div class="field col-6 md:col-4">
+                <label>Category</label>
+                <p-dropdown formControlName="category"
+                    [options]="categories"
+                    optionLabel="name"
+                    dataKey="id"
+                    placeholder="Select a category"></p-dropdown>
+
+                <app-validation-message
+                        [control]="form?.get('category')"
+                        error="required"
+                        text="Caregory is required"/>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label>Brand</label>
+                <input pInputText type="text"
+                        formControlName="brand"
+                        class="form-control">
+                <app-validation-message
+                        [control]="form?.get('brand')"
+                        error="required"
+                        text="Brand is required"/>
+            </div>
+            <div class="field col-6 md:col-2 field-checkbox" style="padding-top: 2.5em;">
+                <p-inputSwitch formControlName="enabled" class="form-control"/>
+                <label>Active</label>
+            </div>
+
+
+            <div class="field col-6 md:col-6">
+                <label>Regular price</label>
+                <p-inputNumber formControlName="regularPrice" mode="currency" currency="USD" locale="en"/>
+                <app-validation-message
+                        [control]="form?.get('regularPrice')"
+                        error="required"
+                        text="Regular price is required."/>
+            </div>
+            <div class="field col-6 md:col-6">
+                <label>Sale price</label>
+                <p-inputNumber formControlName="salePrice" mode="currency" currency="USD" locale="en"/>
+            </div>
+
+            <div class="field col-12 md:col-12">
+                <label>Description</label>
+                <textarea rows="5" cols="30" pInputTextarea [autoResize]="true"
+                        formControlName="description">
+                </textarea>
+            </div>
+
+        </div>
+        <p-divider></p-divider>
+        <div class="col-12 form-actions"
+             style="display: flex;
+                    align-content: center;
+                    align-items: center;
+                    justify-content: flex-end;">
+            <a style="margin-right: 10px;" class="aw-table-link"
+                [routerLink]="isEditing() ? '/products/'+productId : '/products'">Back</a>
+            <button pButton type="submit"
+                    [loading]=saving
+                    [disabled]="isFormInvalid()"
+                    label="Save" ></button>
+          </div>
+    </form>
+</p-card>

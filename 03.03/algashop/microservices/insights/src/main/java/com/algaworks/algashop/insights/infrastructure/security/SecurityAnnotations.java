@@ -1,0 +1,17 @@
+package com.algaworks.algashop.insights.infrastructure.security;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+public class SecurityAnnotations {
+
+	@Target({ElementType.METHOD, ElementType.TYPE})
+	@Retention(RetentionPolicy.RUNTIME)
+	@PreAuthorize("hasAuthority('SCOPE_metrics:read') and not hasRole('CUSTOMER')")
+	public @interface CanReadMetrics {}
+
+}

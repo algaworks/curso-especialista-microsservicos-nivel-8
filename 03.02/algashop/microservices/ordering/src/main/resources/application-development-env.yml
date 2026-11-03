@@ -1,0 +1,151 @@
+spring:
+  config:
+    import:
+      - aws-secretsmanager:/secret/algashop/ordering/database?prefix=ordering.secrets.datasource.
+      - aws-secretsmanager:/secret/algashop/ordering/oauth2-client-secret?prefix=ordering.secrets.
+      - aws-secretsmanager:/secret/algashop/ordering/redis-password?prefix=ordering.secrets.
+      - aws-parameterstore:/config/algashop/ordering?prefix=ordering.params
+      - aws-parameterstore:/config/algashop/shared?prefix=shared.params
+  cloud:
+    aws:
+      credentials:
+        access-key: test
+        secret-key: test
+      region:
+        static: us-east-1
+      endpoint: http://algashop-localstack:4566
+  cache:
+    type: redis
+  datasource:
+    url: ${ordering.params.datasource.url}
+    username: ${ordering.secrets.datasource.username}
+    password: ${ordering.secrets.datasource.password}
+  jpa:
+    show-sql: ${ordering.params.jpa.show-sql}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration,classpath:db/testdata
+    user: ${ordering.secrets.datasource.username}
+    password: ${ordering.secrets.datasource.password}
+    url: ${ordering.params.datasource.url}
+  data:
+    redis:
+      host: ${ordering.params.redis.host}
+      port: ${ordering.params.redis.port}
+      password: ${ordering.secrets.redis-password}
+      database: ${ordering.params.redis.database}
+      timeout: ${ordering.params.redis.timeout}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${shared.params.auth-server-url}
+      client:
+        provider:
+          algashop-as:
+            token-uri: ${shared.params.auth-server-url}/oauth2/token
+        registration:
+          algashop-ordering-service-client:
+            provider: algashop-as
+            client-id: algashop-ordering-service
+            client-secret: ${ordering.secrets.oauth2-client-secret}
+            authorization-grant-type: client_credentials
+            client-authentication-method: client_secret_basic
+            scope: products:read
+  kafka:
+    bootstrap-servers: algashop-kafka-1:9092,algashop-kafka-2:9093,algashop-kafka-3:9094
+    properties:
+      spring.json.type.mapping:
+        ProductCatalog.ProductDelistedIntegrationEvent:com.algaworks.algashop.ordering.core.application.product.event.ProductDelistedIntegrationEvent,
+        ProductCatalog.ProductListedIntegrationEvent:com.algaworks.algashop.ordering.core.application.product.event.ProductListedIntegrationEvent,
+        ProductCatalog.ProductRestockedIntegrationEvent:com.algaworks.algashop.ordering.core.application.product.event.ProductRestockedIntegrationEvent,
+        ProductCatalog.ProductSoldOutIntegrationEvent:com.algaworks.algashop.ordering.core.application.product.event.ProductSoldOutIntegrationEvent,
+        ProductCatalog.ProductPriceChangedIntegrationEvent:com.algaworks.algashop.ordering.core.application.product.event.ProductPriceChangedIntegrationEvent,
+        ProductCatalog.ProductPriceChangedV2IntegrationEvent:com.algaworks.algashop.ordering.core.application.product.event.ProductPriceChangedV2IntegrationEvent,
+        Ordering.OrderPlacedIntegrationEvent:com.algaworks.algashop.ordering.core.application.order.event.OrderPlacedIntegrationEvent,
+        Ordering.OrderPaidIntegrationEvent:com.algaworks.algashop.ordering.core.application.order.event.OrderPaidIntegrationEvent,
+        Ordering.OrderCanceledIntegrationEvent:com.algaworks.algashop.ordering.core.application.order.event.OrderCanceledIntegrationEvent,
+        Ordering.OrderReadyIntegrationEvent:com.algaworks.algashop.ordering.core.application.order.event.OrderReadyIntegrationEvent,
+        Billing.IssueInvoiceIntegrationCommand:com.algaworks.algashop.ordering.core.application.invoice.command.IssueInvoiceIntegrationCommand,
+        Notifications.SendEmailCommand:com.algaworks.algashop.ordering.core.application.notification.command.SendEmailIntegrationCommand,
+        Billing.InvoicePaidIntegrationReply:com.algaworks.algashop.ordering.core.application.invoice.reply.InvoicePaidIntegrationReply,
+        Billing.InvoiceCanceledIntegrationReply:com.algaworks.algashop.ordering.core.application.invoice.reply.InvoiceCanceledIntegrationReply,
+        Stock.ReserveStockIntegrationCommand:com.algaworks.algashop.ordering.core.application.stock.command.ReserveStockIntegrationCommand,
+        Stock.StockReservationConfirmedIntegrationReply:com.algaworks.algashop.ordering.core.application.stock.reply.StockReservationConfirmedIntegrationReply,
+        Stock.StockReservationRejectedIntegrationReply:com.algaworks.algashop.ordering.core.application.stock.reply.StockReservationRejectedIntegrationReply,
+        Billing.CancelInvoiceIntegrationCommand:com.algaworks.algashop.ordering.core.application.invoice.command.CancelInvoiceIntegrationCommand
+    producer:
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+      properties:
+        enable.idempotence: true
+        linger.ms: 0
+        request.timeout.ms: 4000
+        delivery.timeout.ms: 5000
+        max.block.ms: 5000
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      group-id: ordering
+      properties:
+        max.poll.interval.ms: 300000 # 5 minutos ->
+        max.poll.records: 500 # quantidade de registros buscados
+        heartbeat.interval.ms: 3000 # 3 segundos
+#        max.poll.interval.ms: 10000
+#        max.poll.records: 1
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+        spring.json.trusted.packages: com.algaworks.algashop.*
+        spring.json.key.default.type: java.lang.String
+        spring.json.value.default.type: java.lang.String
+        spring.json.value.type.method: com.algaworks.algashop.ordering.infrastructure.config.kafka.KafkaConsumerTypeIdIdentifier.readType
+
+algashop:
+  integrations:
+    shipping.provider: ${ordering.params.integrations.shipping-provider}
+    rapidex.url: ${ordering.params.integrations.rapidex-url}
+    product-catalog:
+      url: ${ordering.params.integrations.product-catalog-url}
+      oauth2-client-registration-id: algashop-ordering-service-client
+  notifications:
+    email-templates:
+      # cadastrado pelo Notifications (db/testdata) no desenvolvimento; nos outros ambientes, crie pela API
+      order-placed: 0198d0a1-2c44-7d0b-8e11-9a0b7c5d3f21
+  messaging:
+    kafka:
+      product-event-topic-name: product-catalog.product.events
+      order-event-topic-name: ordering.order.events
+      product-events-consumer-group: ordering.product-events
+      billing-invoice-commands-topic-name: billing.invoice.commands
+      product-catalog-stock-commands-topic-name: product-catalog.stock.commands
+      saga-replies-topic-name: ordering.saga.replies
+      saga-replies-consumer-group: ordering.saga-replies
+      notifications-email-commands-topic-name: notifications.email.commands
+    outbox:
+      enabled: true
+      send-timeout: PT5S
+      batch-size: 100
+      poll-interval: PT1M #PT5S
+      max-attempts: 10
+      backoff: PT5S
+      batch-deadline: PT3M
+      dispatcher:
+        enabled: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${shared.params.service-registry-url}/eureka
+    healthcheck:
+      enabled: true
+  instance:
+    instanceId: ${random.uuid}
+    prefer-ip-address: true
+
+logging:
+  level:
+    com.netflix.discovery.DiscoveryClient: OFF
+    com.netflix.discovery: OFF
+    com.netflix.eureka: OFF
+#    org.springframework.kafka: OFF
+#    org.apache.kafka: OFF

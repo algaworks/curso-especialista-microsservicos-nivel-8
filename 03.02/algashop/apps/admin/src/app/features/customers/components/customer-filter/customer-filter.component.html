@@ -1,0 +1,36 @@
+<p-accordion>
+  <p-accordionTab header="Filters">
+    <form [formGroup]="form!" (ngSubmit)="search()" class="aw-form">
+      <div class="p-fluid p-formgrid grid col-8">
+        <div class="field col-12 md:col-4" >
+            <label>First name: </label>
+            <input pInputText type="text"
+                    formControlName="firstName"
+                    class="form-control">
+        </div>
+        <div class="field col-12 md:col-4" >
+            <label>Email: </label>
+            <input pInputText type="text"
+                    formControlName="email"
+                    class="form-control">
+        </div>
+      </div >
+      <p-divider></p-divider>
+      <div class="col-12 form-actions" style="display: flex;
+                                                align-content: center;
+                                                align-items: center;
+                                                justify-content: flex-end;">
+        <button pButton
+                [text]="true"
+                style="margin-right: 10px;"
+                (click)="clearFilter()"
+                [loading]=searching
+                label="Clear"></button>
+        <button pButton
+                type="submit"
+                [loading]=searching
+                label="Search"></button>
+      </div>
+    </form>
+  </p-accordionTab>
+</p-accordion>

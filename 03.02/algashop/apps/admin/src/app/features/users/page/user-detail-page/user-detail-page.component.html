@@ -1,0 +1,76 @@
+<div class="grid" style="margin-bottom: 0.5em;">
+    <div class="col-12">
+        <div class="aw-page-options-center">
+            <h1 class="aw-card-title">User details</h1>
+            <div class="p-toolbar-group-right">
+                <button pButton pRipple
+                        type="button" pTooltip="Voltar"
+                        tooltipPosition="bottom" routerLink="/users"
+                        icon="pi pi-arrow-left"
+                        class="aw-top-actions-button p-button-secondary p-button-text"></button>
+                <button pButton pRipple
+                        type="button" pTooltip="Mais opções"
+                        tooltipPosition="bottom"
+                        (click)="menu.toggle($event)"
+                        icon="pi pi-ellipsis-h"
+                        class="aw-top-actions-button p-button-secondary p-button-text"></button>
+                <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 md:col-12 lg:col-12">
+        <p-card class="aw-card-no-padding">
+            <ng-template pTemplate="title">
+                <p-toolbar styleClass="aw-card-toolbar">
+                    <div class="p-toolbar-group-left">
+                        <div class="p-card-title ng-star-inserted aw-card-title">
+                            <ng-container *ngIf="loading">
+                                <p-skeleton width="15rem" height="2rem" styleClass="p-mb-2"></p-skeleton>
+                            </ng-container>
+                            <ng-container *ngIf="!loading">
+                                {{user?.name}}
+                            </ng-container>
+                        </div>
+                    </div>
+                </p-toolbar>
+            </ng-template>
+            <div class="aw-flex-card-body" *ngIf="!loading">
+                <div style="width: 520px;">
+                    <ul class="aw-card-label-group aw-card-label-group-md">
+                        <li>
+                            <app-label-with-default
+                                label="Email:" [value]="user?.email">
+                            </app-label-with-default>
+                        </li>
+                        <li>
+                            <app-label-with-default
+                                label="Type:" [value]="enumToValue(user!.type)">
+                            </app-label-with-default>
+                        </li>
+                        <li>
+                            <app-label-with-default
+                                label="Enabled:" [value]="user?.enabled ? 'Yes' : 'No'">
+                            </app-label-with-default>
+                        </li>
+                        <li>
+                            <app-label-with-default
+                                label="Id:" [value]="user?.id">
+                            </app-label-with-default>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="aw-detail-card-body" *ngIf="loading">
+                <div>
+                    <ul class="aw-card-label-group aw-card-label-group-xss ">
+                        <li>
+                            <p-skeleton width="30rem" styleClass="p-mb-2"></p-skeleton>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </p-card>
+    </div>
+
+</div>
+<router-outlet></router-outlet>
