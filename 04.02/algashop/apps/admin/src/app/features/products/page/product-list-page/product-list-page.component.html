@@ -1,0 +1,90 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="aw-page-title">
+            <h1 class="aw-card-title">Products</h1>
+            <button routerLink="/products/new"
+                pButton
+                pRipple
+                type="button"
+                label="New"
+                class="p-button-primary p-button-outlined">
+            </button>
+        </div>
+        <div class="aw-page-options">
+            <!--filter-->
+            <app-product-filter (doFilter)="doSearch($event)"
+                                [appliedFilter]="filter" />
+        </div>
+
+        <p-table [value]="products!"
+                styleClass="p-datatable-sm p-card"
+                [lazyLoadOnInit]="false"
+                [resizableColumns]="true"
+                columnResizeMode="expand"
+                [lazy]="true"
+                (onLazyLoad)="onPageChange($event)"
+                [paginator]="true"
+                [rows]="recordsPerPage"
+                [totalRecords]="totalElements"
+                [loading]="loading">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Brand</th>
+                    <th>On sale</th>
+                    <th [pSortableColumn]="sortProperties.SALE_PRICE">Sale price<p-sortIcon [field]="sortProperties.SALE_PRICE"></p-sortIcon></th>
+                    <th>Discount percentage</th>
+                    <th>Status</th>
+                    <th>In stock</th>
+                    <th [pSortableColumn]="sortProperties.ADDED_AT">Creation date<p-sortIcon [field]="sortProperties.ADDED_AT"></p-sortIcon></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product>
+                <tr>
+                    <td>
+                        {{product.id}}
+                    </td>
+                    <td>
+                        <a routerLink="/products/{{product.id}}"
+                            class="aw-table-link">
+                            {{product.name}}
+                        </a>
+                    </td>
+                    <td>
+                        {{product.category.name}}
+                    </td>
+                    <td>
+                        {{product.brand}}
+                    </td>
+                    <td>
+                        {{product.hasDiscount ? 'Yes' : 'No'}}
+                    </td>
+                    <td>
+                        {{product.salePrice | currency: 'USD'}}
+                    </td>
+                    <td>
+                        {{product.discountPercentageRounded}}%
+                    </td>
+                    <td>
+                        <app-product-status-badge [enabled]="product.enabled"/>
+                    </td>
+                    <td>
+                        <app-product-inventory-status-badge [inventoryStatus]="product.inStock"/>
+                    </td>
+                    <td>
+                        {{product.addedAt | date}}
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage" let-columns>
+                <tr>
+                    <td [attr.colspan]="10" style="text-align: center; padding: 1em;">
+                      No results were found for this search.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

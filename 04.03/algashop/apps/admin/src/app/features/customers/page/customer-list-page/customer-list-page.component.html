@@ -1,0 +1,63 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="aw-page-title">
+            <h1 class="aw-card-title">Customers</h1>
+        </div>
+        <div class="aw-page-options">
+            <!--filter-->
+            <app-customer-filter (doFilter)="doSearch($event)"
+                             [appliedFilter]="filter"/>
+        </div>
+
+        <p-table [value]="customers!"
+                styleClass="p-datatable-sm p-card"
+                [lazyLoadOnInit]="false"
+                [resizableColumns]="true"
+                columnResizeMode="expand"
+                [lazy]="true"
+                (onLazyLoad)="onPageChange($event)"
+                [paginator]="true"
+                [rows]="recordsPerPage"
+                [totalRecords]="totalElements"
+                [loading]="loading">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th [pSortableColumn]="sortProperties.FIRST_NAME">Name<p-sortIcon [field]="sortProperties.FIRST_NAME"></p-sortIcon></th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Born on</th>
+                    <th>Document</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-customer>
+                <tr>
+                    <td>
+                        <a routerLink="/customers/{{customer.id}}"
+                            class="aw-table-link">
+                            {{customer.firstName}} {{customer.lastName}}
+                        </a>
+                    </td>
+                    <td>
+                        {{customer.email}}
+                    </td>
+                    <td>
+                        {{customer.phone}}
+                    </td>
+                     <td>
+                        {{customer.birthDate | date}}
+                    </td>
+                     <td>
+                        {{customer.document}}
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage" let-columns>
+                <tr>
+                    <td [attr.colspan]="5" style="text-align: center; padding: 1em;">
+                      No results were found for this search.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

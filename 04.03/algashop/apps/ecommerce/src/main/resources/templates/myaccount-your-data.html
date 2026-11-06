@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/blank}">
+
+<th:block layout:fragment="breadcrumb">
+
+</th:block>
+
+<th:block layout:fragment="content">
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12">
+<!--                    <h3 class="breadcrumb-header">My account</h3>-->
+                    <ul class="breadcrumb-tree">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/my-account" class="active">My account</a></li>
+                        <li class="active">Account details</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /BREADCRUMB -->
+
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <!-- ASIDE -->
+                <div class="col-md-2" style="margin-bottom: 2em;">
+                    <!-- aside Widget -->
+                    <div class="aside">
+                        <ul class="aside-links">
+                            <li><a href="/my-account">Summary</a></li>
+                            <li><a href="/my-account/orders">Orders</a></li>
+                            <li><a href="/my-account/details" class="active">Account details</a></li>
+                            <li><a href="/my-account/address">Address</a></li>
+                            <li><a href="/my-account/credit-cards">Credit cards</a></li>
+                        </ul>
+                    </div>
+                    <!-- /aside Widget -->
+                </div>
+                <!-- /ASIDE -->
+
+                <!-- STORE -->
+                <div class="col-md-10">
+                    <!-- /store products -->
+                    <div class="row">
+                        <th:block th:insert="~{fragments/messages-by-type.html}"></th:block>
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="order-details">
+                                <h3>Account details</h3>
+                                <form th:action="|/my-account/details|" method="post" style="margin-bottom: 2em;"
+                                      th:if="${customerForm != null}"
+                                      th:object="${customerForm}">
+                                    <div class="form-group">
+                                        <input class="input" type="text" th:field="*{fullName}" th:errorclass="error" placeholder="Fullname" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" data-mask="000-000-0000" type="text" th:field="*{phone}" th:errorclass="error" placeholder="Phone" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" data-mask="00/00/0000" type="text" th:field="*{birthDate}" th:errorclass="error" placeholder="Born on" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="input" data-mask="000-00-000" type="text" th:field="*{document}" th:errorclass="error" placeholder="Document" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-checkbox">
+                                            <input type="checkbox" id="promoAcc"
+                                                   th:checked="*{allowPromotionNotifications}" name="allowPromotionNotifications">
+                                            <label for="promoAcc">
+                                                <span></span>
+                                                Do you accept receiving promotion alerts?
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="primary-btn order-submit">Save</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12" style="margin-bottom: 2em;">
+                            <div class="order-details">
+                                <h3>Change password</h3>
+                                <form th:action="|/my-account/details/password|" method="post">
+                                    <p>We will send password change instructions to your registered e-mail.</p>
+                                    <button type="submit" class="primary-btn order-submit">Request password change</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12" style="margin-bottom: 2em;" id="close-account">
+                            <div class="order-details">
+                                <h3>Close account</h3>
+                                <p>This action cannot be undone.</p>
+                                <button type="button" class="primary-btn order-submit"
+                                        data-toggle="modal" data-target="#accountClosureConfirmationModal">
+                                    Close account
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /STORE -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+
+    <div class="modal fade" id="accountClosureConfirmationModal" tabindex="-1" role="dialog"
+         aria-labelledby="accountClosureConfirmationModalTitle">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="accountClosureConfirmationModalTitle">Close account</h4>
+                </div>
+                <div class="modal-body">
+                    <p>This action cannot be undone.</p>
+                    <p>Your account will be closed and you will be logged out.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="secondary-btn btn btn-default" data-dismiss="modal">Cancel</button>
+                    <form th:action="@{/my-account/details/account-closure}" method="post" style="display: inline-block;">
+                        <button type="submit" class="primary-btn order-submit">Close my account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="javascript-extra">
+
+</th:block>
+
+</html>
