@@ -1,0 +1,91 @@
+server.port: 8082
+
+spring:
+  config:
+    import:
+      - aws-secretsmanager:/secret/algashop/billing/database?prefix=billing.secrets.datasource.
+      - aws-secretsmanager:/secret/algashop/billing/fastpay-token?prefix=billing.secrets.
+      - aws-parameterstore:/config/algashop/billing?prefix=billing.params
+      - aws-parameterstore:/config/algashop/shared?prefix=shared.params
+  cloud:
+    aws:
+      credentials:
+        access-key: test
+        secret-key: test
+      region:
+        static: us-east-1
+      endpoint: http://algashop-localstack:4566
+  datasource:
+    url: ${billing.params.datasource.url}
+    username: ${billing.secrets.datasource.username}
+    password: ${billing.secrets.datasource.password}
+  jpa:
+    show-sql: ${billing.params.jpa.show-sql}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration,classpath:db/testdata
+    user: ${billing.secrets.datasource.username}
+    password: ${billing.secrets.datasource.password}
+    url: ${billing.params.datasource.url}
+  kafka:
+    bootstrap-servers: algashop-kafka-1:9092,algashop-kafka-2:9093,algashop-kafka-3:9094
+    properties:
+      spring.json.type.mapping:
+        Billing.InvoiceIssuedIntegrationEvent:com.algaworks.algashop.billing.application.invoice.event.InvoiceIssuedIntegrationEvent,
+        Billing.InvoicePaidIntegrationEvent:com.algaworks.algashop.billing.application.invoice.event.InvoicePaidIntegrationEvent,
+        Billing.InvoiceCanceledIntegrationEvent:com.algaworks.algashop.billing.application.invoice.event.InvoiceCanceledIntegrationEvent,
+        Billing.IssueInvoiceIntegrationCommand:com.algaworks.algashop.billing.application.invoice.command.IssueInvoiceIntegrationCommand,
+        Billing.InvoicePaidIntegrationReply:com.algaworks.algashop.billing.application.invoice.reply.InvoicePaidIntegrationReply,
+        Billing.InvoiceCanceledIntegrationReply:com.algaworks.algashop.billing.application.invoice.reply.InvoiceCanceledIntegrationReply,
+        Billing.CancelInvoiceIntegrationCommand:com.algaworks.algashop.billing.application.invoice.command.CancelInvoiceIntegrationCommand
+    admin:
+      fail-fast: true
+      auto-create: true
+      modify-topic-configs: false
+    producer:
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+      properties:
+        enable.idempotence: true
+        request.timeout.ms: 5000
+        delivery.timeout.ms: 30000
+        max.block.ms: 5000
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+        spring.json.trusted.packages: com.algaworks.algashop.*
+        spring.json.key.default.type: java.lang.String
+        spring.json.value.default.type: java.lang.String
+        spring.json.value.type.method: com.algaworks.algashop.billing.infrastructure.kafka.KafkaConsumerTypeIdIdentifier.readType
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${shared.params.auth-server-url}
+
+algashop:
+  integrations:
+    payment:
+      provider: FASTPAY
+      fastpay:
+        hostname: ${billing.params.fastpay.hostname}
+        private-token: ${billing.secrets.fastpay-token}
+        webhook-url: ${billing.params.fastpay.webhook-url}
+  messaging:
+    kafka:
+      invoice-event-topic-name: billing.invoice.events
+      invoice-events-consumer-group: billing.invoice-events
+      invoice-commands-topic-name: billing.invoice.commands
+      invoice-commands-consumer-group: billing.invoice-commands
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${shared.params.service-registry-url}/eureka
+    healthcheck:
+      enabled: true
+  instance:
+    instanceId: ${random.uuid}
+    prefer-ip-address: true

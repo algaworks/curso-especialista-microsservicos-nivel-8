@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="product js-product-on-click">
+    <div class="product-img">
+        <img th:if="${product?.mainImage?.url != null}" th:src="${product.mainImage.url}" decoding="async">
+        <img th:unless="${product?.mainImage?.url != null}" th:src="@{/img/no-picture.png}" decoding="async">
+        <div class="product-label">
+            <span th:if="${product.hasDiscount}" class="sale" th:text="|-${product.discountPercentageRounded}%|">-30%</span>
+        </div>
+    </div>
+    <div class="product-body">
+        <p class="product-category" th:text="${product.category.name}">Category</p>
+        <h3 class="product-name">
+            <a class="js-product-on-click-link" th:href="|/products/${product.slug}/${product.id}|"
+               th:text="|${product.name}|">product name goes here</a>
+        </h3>
+        <h4 class="product-price" th:if="${product.hasDiscount}">
+            <th:block th:text="${#numbers.formatCurrency(product.salePrice)}"></th:block>
+            <del class="product-old-price" th:text="${#numbers.formatCurrency(product.regularPrice)}">$990.00</del></h4>
+        <h4 class="product-price" th:if="${!product.hasDiscount}"  th:text="${#numbers.formatCurrency(product.regularPrice)}">$980.00</h4>
+    </div>
+</div>
+</body>
+</html>

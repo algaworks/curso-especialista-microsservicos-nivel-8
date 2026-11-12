@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="dropdown" th:with="shoppingCart=${@menuService.loadShoppingCart()}" th:object="${shoppingCart}">
+    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+        <i class="fa fa-shopping-cart"></i>
+        <span>Shopping Cart</span>
+        <div class="qty" th:if="${shoppingCart.totalItems > 0}" th:text="${shoppingCart.totalItems}">3</div><!--qtd items-->
+    </a>
+    <div class="cart-dropdown">
+        <div class="cart-list">
+            <div class="product-widget" th:each="item: ${shoppingCart.items}">
+                <div class="product-body">
+                    <h3 class="product-name"><a th:href="|/products/${item.productId}/${item.productId}|"
+                                                th:text="${item.name}"></a></h3>
+                    <h4 class="product-price"><span class="qty" th:text="|${item.quantity}x|">1x</span>
+                        <th:block th:text="${#numbers.formatCurrency(item.price)}"></th:block>
+                    </h4>
+                </div>
+<!--                <button class="delete"><i class="fa fa-close"></i></button>-->
+            </div>
+
+        </div>
+        <div class="cart-summary">
+            <small th:text="|${shoppingCart.totalItems} Item(s)|">3 Item(s)</small>
+            <h5 th:text="|Subtotal: ${#numbers.formatCurrency(shoppingCart.totalAmount)}|">SUBTOTAL: $2940.00</h5>
+        </div>
+        <div class="cart-btns">
+            <a href="/shopping-cart">Shopping Cart</a>
+            <a href="/checkout">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

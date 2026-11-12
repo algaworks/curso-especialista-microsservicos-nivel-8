@@ -1,0 +1,5 @@
+<label>{{label}}</label>
+<span *ngIf="!wrapper.innerHTML.trim()" [ngClass]="{'aw-text-gray': !value}" >{{value || default}}</span>
+<span #wrapper>
+    <ng-content></ng-content>
+</span>

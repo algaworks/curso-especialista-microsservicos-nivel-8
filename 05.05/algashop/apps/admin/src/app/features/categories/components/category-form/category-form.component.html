@@ -1,0 +1,41 @@
+<h1 class="aw-card-title" >
+    <ng-container *ngIf="!isEditing()">
+        New category
+    </ng-container>
+    <ng-container *ngIf="isEditing()">
+        Editing category
+    </ng-container>
+</h1>
+<p-card class="aw-card-no-padding">
+    <form [formGroup]="form!" (ngSubmit)="save()" class="aw-form">
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-6">
+                <label>Name</label>
+                <input pInputText type="text"
+                        formControlName="name"
+                        class="form-control">
+                <app-validation-message
+                        [control]="form?.get('name')"
+                        error="required"
+                        text="Name is required"/>
+            </div>
+            <div class="field col-6 md:col-2 field-checkbox" style="padding-top: 2.5em;">
+                <p-inputSwitch formControlName="enabled" class="form-control"/>
+                <label>Enabled</label>
+            </div>
+        </div>
+        <p-divider></p-divider>
+        <div class="col-12 form-actions"
+             style="display: flex;
+                    align-content: center;
+                    align-items: center;
+                    justify-content: flex-end;">
+            <a style="margin-right: 10px;" class="aw-table-link"
+                [routerLink]="isEditing() ? '/categories/'+categoryId : '/categories'">Back</a>
+            <button pButton type="submit"
+                    [loading]=saving
+                    [disabled]="isFormInvalid()"
+                    label="Save" ></button>
+          </div>
+    </form>
+</p-card>

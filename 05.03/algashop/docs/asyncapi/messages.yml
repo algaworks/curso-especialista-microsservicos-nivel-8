@@ -1,0 +1,1383 @@
+asyncapi: 3.1.0
+
+info:
+  title: AlgaShop Messages Components AsyncAPI
+  version: "1.0"
+
+components:
+  messages:
+    ProductAddedEvent:
+      name: ProductAddedEvent
+      title: Product Added Event
+      summary: Published when a new product is added.
+      contentType: application/json
+      tags:
+        - name: Products
+      headers:
+        $ref: "#/components/schemas/ProductAddedHeaders"
+      payload:
+        $ref: "#/components/schemas/ProductAddedPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaProductKey"
+
+    ProductListedEvent:
+      name: ProductListedEvent
+      title: Product Listed Event
+      summary: Published when a product becomes available for sale.
+      contentType: application/json
+      tags:
+        - name: Products
+      headers:
+        $ref: "#/components/schemas/ProductListedHeaders"
+      payload:
+        $ref: "#/components/schemas/ProductListedPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaProductKey"
+
+    ProductDelistedEvent:
+      name: ProductDelistedEvent
+      title: Product Delisted Event
+      summary: Published when a product is no longer available for sale.
+      contentType: application/json
+      tags:
+        - name: Products
+      headers:
+        $ref: "#/components/schemas/ProductDelistedHeaders"
+      payload:
+        $ref: "#/components/schemas/ProductDelistedPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaProductKey"
+
+    ProductPriceChangedEvent:
+      name: ProductPriceChangedEvent
+      title: Product Price Changed Event
+      summary: Legacy notification that a product price changed.
+      deprecated: true
+      contentType: application/json
+      tags:
+        - name: Products
+      headers:
+        $ref: "#/components/schemas/ProductPriceChangedHeaders"
+      payload:
+        $ref: "#/components/schemas/ProductPriceChangedPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaProductKey"
+
+    ProductPriceChangedEventV2:
+      name: ProductPriceChangedEventV2
+      title: Product Price Changed Event (v2)
+      summary: Published with the previous and current prices when a price changes.
+      contentType: application/json
+      tags:
+        - name: Products
+      headers:
+        $ref: "#/components/schemas/ProductPriceChangedV2Headers"
+      payload:
+        $ref: "#/components/schemas/ProductPriceChangedV2Payload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaProductKey"
+
+    ProductPlacedOnSaleEvent:
+      name: ProductPlacedOnSaleEvent
+      title: Product Placed On Sale Event
+      summary: Published when a product is placed on sale.
+      contentType: application/json
+      tags:
+        - name: Products
+      headers:
+        $ref: "#/components/schemas/ProductPlacedOnSaleHeaders"
+      payload:
+        $ref: "#/components/schemas/ProductPlacedOnSalePayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaProductKey"
+
+    ProductRestockedEvent:
+      name: ProductRestockedEvent
+      title: Product Restocked Event
+      summary: Published when a product is back in stock.
+      contentType: application/json
+      tags:
+        - name: Products
+      headers:
+        $ref: "#/components/schemas/ProductRestockedHeaders"
+      payload:
+        $ref: "#/components/schemas/ProductRestockedPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaProductKey"
+
+    ProductSoldOutEvent:
+      name: ProductSoldOutEvent
+      title: Product Sold Out Event
+      summary: Published when a product runs out of stock.
+      contentType: application/json
+      tags:
+        - name: Products
+      headers:
+        $ref: "#/components/schemas/ProductSoldOutHeaders"
+      payload:
+        $ref: "#/components/schemas/ProductSoldOutPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaProductKey"
+
+    OrderPaidEvent:
+      name: OrderPaidEvent
+      title: Order Paid Event
+      summary: Published when payment for an order is confirmed.
+      contentType: application/json
+      tags:
+        - name: Orders
+      headers:
+        $ref: "#/components/schemas/OrderPaidHeaders"
+      payload:
+        $ref: "#/components/schemas/OrderPaidPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaOrderKey"
+
+    OrderPlacedEvent:
+      name: OrderPlacedEvent
+      title: Order Placed Event
+      summary: Published when an order is placed.
+      contentType: application/json
+      tags:
+        - name: Orders
+      headers:
+        $ref: "#/components/schemas/OrderPlacedHeaders"
+      payload:
+        $ref: "#/components/schemas/OrderPlacedPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaOrderKey"
+
+    OrderReadyEvent:
+      name: OrderReadyEvent
+      title: Order Ready Event
+      summary: Published when an order is ready after stock reservation.
+      contentType: application/json
+      tags:
+        - name: Orders
+      headers:
+        $ref: "#/components/schemas/OrderReadyHeaders"
+      payload:
+        $ref: "#/components/schemas/OrderReadyPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaOrderKey"
+
+    OrderCanceledEvent:
+      name: OrderCanceledEvent
+      title: Order Canceled Event
+      summary: Published when an order is canceled.
+      contentType: application/json
+      tags:
+        - name: Orders
+      headers:
+        $ref: "#/components/schemas/OrderCanceledHeaders"
+      payload:
+        $ref: "#/components/schemas/OrderCanceledPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaOrderKey"
+
+    InvoicePaidEvent:
+      name: InvoicePaidEvent
+      title: Invoice Paid Event
+      summary: Published when an invoice is paid.
+      contentType: application/json
+      tags:
+        - name: Invoices
+      headers:
+        $ref: "#/components/schemas/InvoicePaidHeaders"
+      payload:
+        $ref: "#/components/schemas/InvoicePaidPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaInvoiceKey"
+
+    InvoiceIssuedEvent:
+      name: InvoiceIssuedEvent
+      title: Invoice Issued Event
+      summary: Published when an invoice is issued and ready for payment processing.
+      contentType: application/json
+      tags:
+        - name: Invoices
+      headers:
+        $ref: "#/components/schemas/InvoiceIssuedHeaders"
+      payload:
+        $ref: "#/components/schemas/InvoiceIssuedPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaInvoiceKey"
+
+    InvoiceCanceledEvent:
+      name: InvoiceCanceledEvent
+      title: Invoice Canceled Event
+      summary: Published when an invoice is canceled.
+      contentType: application/json
+      tags:
+        - name: Invoices
+      headers:
+        $ref: "#/components/schemas/InvoiceCanceledHeaders"
+      payload:
+        $ref: "#/components/schemas/InvoiceCanceledPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaInvoiceKey"
+
+    IssueInvoiceCommand:
+      name: IssueInvoiceCommand
+      title: Issue Invoice Command
+      summary: Asks Billing to issue and charge the invoice of a placed order.
+      contentType: application/json
+      tags:
+        - name: Commands
+      headers:
+        $ref: "#/components/schemas/IssueInvoiceHeaders"
+      correlationId:
+        $ref: "#/components/correlationIds/CorrelationId"
+      payload:
+        $ref: "#/components/schemas/IssueInvoicePayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaOrderKey"
+
+    CancelInvoiceCommand:
+      name: CancelInvoiceCommand
+      title: Refund Invoice Command
+      summary: Asks Billing to refund the invoice of an order (compensation).
+      contentType: application/json
+      tags:
+        - name: Commands
+      headers:
+        $ref: "#/components/schemas/CancelInvoiceHeaders"
+      correlationId:
+        $ref: "#/components/correlationIds/CorrelationId"
+      payload:
+        $ref: "#/components/schemas/CancelInvoicePayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaOrderKey"
+
+    ReserveStockCommand:
+      name: ReserveStockCommand
+      title: Reserve Stock Command
+      summary: Asks Product Catalog to reserve the stock of every item of a paid order.
+      contentType: application/json
+      tags:
+        - name: Commands
+      headers:
+        $ref: "#/components/schemas/ReserveStockHeaders"
+      correlationId:
+        $ref: "#/components/correlationIds/CorrelationId"
+      payload:
+        $ref: "#/components/schemas/ReserveStockPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaOrderKey"
+
+    SendEmailCommand:
+      name: SendEmailCommand
+      title: Send Email Command
+      summary: Asks Notifications to send an email rendered from a template.
+      contentType: application/json
+      tags:
+        - name: Email
+      headers:
+        $ref: "#/components/schemas/SendEmailHeaders"
+      payload:
+        $ref: "#/components/schemas/SendEmailPayload"
+      examples:
+        - name: OrderPlaced
+          headers:
+            __TypeId__: Notifications.SendEmailCommand
+            idempotency-key: 0198d0a4-6a3f-7b2e-9a51-3f6f1c2d4e10
+          payload:
+            recipient:
+              email: john.doe@example.com
+              name: John Doe
+            templateId: 0198d0a1-2c44-7d0b-8e11-9a0b7c5d3f21
+            variables:
+              orderId: ORD-1001
+              placedAt: "2026-10-09T14:30:00-03:00"
+              totalAmount: 129.9
+              shippingCost: 9.9
+              expectedDeliveryDate: "2026-10-15"
+              items:
+                - productName: Mouse
+                  quantity: 2
+                  price: 60.0
+                  totalAmount: 120.0
+
+    InvoicePaidReply:
+      name: InvoicePaidReply
+      title: Invoice Paid Reply
+      summary: Billing reports that the invoice of the order was paid.
+      description: Answers IssueInvoiceCommand.
+      contentType: application/json
+      tags:
+        - name: Replies
+      headers:
+        $ref: "#/components/schemas/InvoicePaidReplyHeaders"
+      correlationId:
+        $ref: "#/components/correlationIds/CorrelationId"
+      payload:
+        $ref: "#/components/schemas/InvoicePaidReplyPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaOrderKey"
+
+    InvoiceCanceledReply:
+      name: InvoiceCanceledReply
+      title: Invoice Canceled Reply
+      summary: Billing reports that the invoice of the order was canceled.
+      contentType: application/json
+      tags:
+        - name: Replies
+      headers:
+        $ref: "#/components/schemas/InvoiceCanceledReplyHeaders"
+      correlationId:
+        $ref: "#/components/correlationIds/CorrelationId"
+      payload:
+        $ref: "#/components/schemas/InvoiceCanceledReplyPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaOrderKey"
+
+    StockReservationConfirmedReply:
+      name: StockReservationConfirmedReply
+      title: Stock Reservation Confirmed Reply
+      summary: Product Catalog reports that stock was reserved for every order item.
+      description: Answers ReserveStockCommand.
+      contentType: application/json
+      tags:
+        - name: Replies
+      headers:
+        $ref: "#/components/schemas/StockReservationConfirmedReplyHeaders"
+      correlationId:
+        $ref: "#/components/correlationIds/CorrelationId"
+      payload:
+        $ref: "#/components/schemas/StockReservationConfirmedReplyPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaOrderKey"
+
+    StockReservationRejectedReply:
+      name: StockReservationRejectedReply
+      title: Stock Reservation Rejected Reply
+      summary: Product Catalog reports that stock could not be reserved for the order.
+      description: Answers ReserveStockCommand.
+      contentType: application/json
+      tags:
+        - name: Replies
+      headers:
+        $ref: "#/components/schemas/StockReservationRejectedReplyHeaders"
+      correlationId:
+        $ref: "#/components/correlationIds/CorrelationId"
+      payload:
+        $ref: "#/components/schemas/StockReservationRejectedReplyPayload"
+      traits:
+        - $ref: "#/components/messageTraits/KafkaOrderKey"
+
+  correlationIds:
+    CorrelationId:
+      description: ID of the request, sent in every command and echoed in its reply.
+      location: "$message.header#/kafka_correlationId"
+
+  schemas:
+    ProductAddedHeaders:
+      allOf:
+        - $ref: "#/components/schemas/IdempotentEventHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: ProductCatalog.ProductAddedIntegrationEvent
+              description: Logical type used by the Jackson deserializer.
+
+    ProductListedHeaders:
+      allOf:
+        - $ref: "#/components/schemas/IdempotentEventHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: ProductCatalog.ProductListedIntegrationEvent
+              description: Logical type used by the Jackson deserializer.
+
+    ProductDelistedHeaders:
+      allOf:
+        - $ref: "#/components/schemas/IdempotentEventHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: ProductCatalog.ProductDelistedIntegrationEvent
+              description: Logical type used by the Jackson deserializer.
+
+    ProductPriceChangedHeaders:
+      allOf:
+        - $ref: "#/components/schemas/IdempotentEventHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: ProductCatalog.ProductPriceChangedIntegrationEvent
+              description: Logical type used by the Jackson deserializer.
+
+    ProductPriceChangedV2Headers:
+      allOf:
+        - $ref: "#/components/schemas/IdempotentEventHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: ProductCatalog.ProductPriceChangedV2IntegrationEvent
+              description: Logical type used by the Jackson deserializer.
+
+    ProductPlacedOnSaleHeaders:
+      allOf:
+        - $ref: "#/components/schemas/IdempotentEventHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: ProductCatalog.ProductPlacedOnSaleIntegrationEvent
+              description: Logical type used by the Jackson deserializer.
+
+    ProductRestockedHeaders:
+      allOf:
+        - $ref: "#/components/schemas/IdempotentEventHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: ProductCatalog.ProductRestockedIntegrationEvent
+              description: Logical type used by the Jackson deserializer.
+
+    ProductSoldOutHeaders:
+      allOf:
+        - $ref: "#/components/schemas/IdempotentEventHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: ProductCatalog.ProductSoldOutIntegrationEvent
+              description: Logical type used by the Jackson deserializer.
+
+    OrderPaidHeaders:
+      type: object
+      required:
+        - __TypeId__
+      properties:
+        __TypeId__:
+          type: string
+          const: Ordering.OrderPaidIntegrationEvent
+          description: Logical type used by the Jackson deserializer.
+        idempotency-key:
+          type: string
+          format: uuid
+          description: Present when the event is published through the outbox.
+
+    OrderPlacedHeaders:
+      allOf:
+        - $ref: "#/components/schemas/IdempotentEventHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: Ordering.OrderPlacedIntegrationEvent
+              description: Logical type used by the Jackson deserializer.
+
+    OrderReadyHeaders:
+      type: object
+      required:
+        - __TypeId__
+      properties:
+        __TypeId__:
+          type: string
+          const: Ordering.OrderReadyIntegrationEvent
+          description: Logical type used by the Jackson deserializer.
+        idempotency-key:
+          type: string
+          format: uuid
+          description: Present when the event is published through the outbox.
+
+    OrderCanceledHeaders:
+      type: object
+      required:
+        - __TypeId__
+      properties:
+        __TypeId__:
+          type: string
+          const: Ordering.OrderCanceledIntegrationEvent
+          description: Logical type used by the Jackson deserializer.
+        idempotency-key:
+          type: string
+          format: uuid
+          description: Present when the event is published through the outbox.
+
+    InvoicePaidHeaders:
+      type: object
+      required:
+        - __TypeId__
+      properties:
+        __TypeId__:
+          type: string
+          const: Billing.InvoicePaidIntegrationEvent
+          description: Logical type used by the Jackson deserializer.
+
+    InvoiceIssuedHeaders:
+      type: object
+      required:
+        - __TypeId__
+      properties:
+        __TypeId__:
+          type: string
+          const: Billing.InvoiceIssuedIntegrationEvent
+          description: Logical type used by the Jackson deserializer.
+
+    InvoiceCanceledHeaders:
+      type: object
+      required:
+        - __TypeId__
+      properties:
+        __TypeId__:
+          type: string
+          const: Billing.InvoiceCanceledIntegrationEvent
+          description: Logical type used by the Jackson deserializer.
+
+    IdempotentEventHeaders:
+      type: object
+      required:
+        - idempotency-key
+      properties:
+        idempotency-key:
+          type: string
+          format: uuid
+          description: Unique event identifier used for idempotent processing.
+          example: "018ec6f7-6f47-7d5a-a337-9dbcc12e7176"
+
+    CommandHeaders:
+      type: object
+      required:
+        - kafka_correlationId
+        - kafka_replyTopic
+      properties:
+        kafka_correlationId:
+          $ref: "#/components/schemas/CorrelationId"
+        kafka_replyTopic:
+          type: string
+          minLength: 1
+          description: Topic where the reply must be published. 
+          example: "ordering.saga.replies"
+        idempotency-key:
+          type: string
+          format: uuid
+          description: Present when the command is published through the outbox.
+
+    ReplyHeaders:
+      type: object
+      required:
+        - kafka_correlationId
+      properties:
+        kafka_correlationId:
+          $ref: "#/components/schemas/CorrelationId"
+
+    IssueInvoiceHeaders:
+      allOf:
+        - $ref: "#/components/schemas/CommandHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: Ordering.IssueInvoiceIntegrationCommand
+              description: Logical type used by the Jackson deserializer.
+
+    CancelInvoiceHeaders:
+      allOf:
+        - $ref: "#/components/schemas/CommandHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: Billing.CancelInvoiceIntegrationCommand
+              description: Logical type used by the Jackson deserializer.
+
+    ReserveStockHeaders:
+      allOf:
+        - $ref: "#/components/schemas/CommandHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: Ordering.ReserveStockIntegrationCommand
+              description: Logical type used by the Jackson deserializer.
+
+    SendEmailHeaders:
+      type: object
+      required:
+        - __TypeId__
+        - idempotency-key
+      properties:
+        __TypeId__:
+          type: string
+          const: Notifications.SendEmailCommand
+          description: Type id used to pick the payload class.
+        idempotency-key:
+          type: string
+          format: uuid
+          description: >-
+            Unique id of the command. A second command with the same key is
+            discarded, so producers must reuse it when re-sending the same
+            command and generate a new one for a new email.
+
+    InvoicePaidReplyHeaders:
+      allOf:
+        - $ref: "#/components/schemas/ReplyHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: Billing.InvoicePaidIntegrationReply
+              description: Logical type used by the Jackson deserializer.
+
+    InvoiceCanceledReplyHeaders:
+      allOf:
+        - $ref: "#/components/schemas/ReplyHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: Billing.InvoiceCanceledIntegrationReply
+              description: Logical type used by the Jackson deserializer.
+
+    StockReservationConfirmedReplyHeaders:
+      allOf:
+        - $ref: "#/components/schemas/ReplyHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: ProductCatalog.StockReservationConfirmedIntegrationReply
+              description: Logical type used by the Jackson deserializer.
+
+    StockReservationRejectedReplyHeaders:
+      allOf:
+        - $ref: "#/components/schemas/ReplyHeaders"
+        - type: object
+          required:
+            - __TypeId__
+          properties:
+            __TypeId__:
+              type: string
+              const: ProductCatalog.StockReservationRejectedIntegrationReply
+              description: Logical type used by the Jackson deserializer.
+
+    ProductAddedPayload:
+      type: object
+      required:
+        - productId
+        - addedAt
+      properties:
+        productId:
+          $ref: "#/components/schemas/ProductId"
+        addedAt:
+          type: string
+          format: date-time
+          description: Date and time when the product was added.
+          example: "2026-09-11T10:15:30-03:00"
+
+    ProductListedPayload:
+      type: object
+      required:
+        - productId
+        - listedAt
+      properties:
+        productId:
+          $ref: "#/components/schemas/ProductId"
+        listedAt:
+          type: string
+          format: date-time
+          description: Date and time when the product was listed.
+          example: "2026-09-11T10:15:30-03:00"
+
+    ProductDelistedPayload:
+      type: object
+      required:
+        - productId
+        - delistedAt
+      properties:
+        productId:
+          $ref: "#/components/schemas/ProductId"
+        delistedAt:
+          type: string
+          format: date-time
+          description: Date and time when the product was delisted.
+          example: "2026-09-11T10:15:30-03:00"
+
+    ProductPriceChangedPayload:
+      type: object
+      deprecated: true
+      required:
+        - productId
+        - changedAt
+      properties:
+        productId:
+          $ref: "#/components/schemas/ProductId"
+        changedAt:
+          type: string
+          format: date-time
+          description: Date and time when the product price changed.
+          example: "2026-09-11T10:15:30-03:00"
+
+    ProductPriceChangedV2Payload:
+      type: object
+      required:
+        - productId
+        - changedAt
+        - oldRegularPrice
+        - oldSalePrice
+        - newRegularPrice
+        - newSalePrice
+      properties:
+        productId:
+          $ref: "#/components/schemas/ProductId"
+        changedAt:
+          type: string
+          format: date-time
+          description: Date and time when the product price changed.
+          example: "2026-09-11T10:15:30-03:00"
+        oldRegularPrice:
+          $ref: "#/components/schemas/Money"
+        oldSalePrice:
+          $ref: "#/components/schemas/Money"
+        newRegularPrice:
+          $ref: "#/components/schemas/Money"
+        newSalePrice:
+          $ref: "#/components/schemas/Money"
+
+    ProductPlacedOnSalePayload:
+      type: object
+      required:
+        - productId
+        - regularPrice
+        - salePrice
+        - placedOnSaleAt
+      properties:
+        productId:
+          $ref: "#/components/schemas/ProductId"
+        regularPrice:
+          $ref: "#/components/schemas/Money"
+        salePrice:
+          $ref: "#/components/schemas/Money"
+        placedOnSaleAt:
+          type: string
+          format: date-time
+          description: Date and time when the product was placed on sale.
+          example: "2026-09-11T10:15:30-03:00"
+
+    ProductRestockedPayload:
+      type: object
+      required:
+        - productId
+        - restockedAt
+      properties:
+        productId:
+          $ref: "#/components/schemas/ProductId"
+        restockedAt:
+          type: string
+          format: date-time
+          description: Date and time when the product was restocked.
+          example: "2026-09-11T10:15:30-03:00"
+
+    ProductSoldOutPayload:
+      type: object
+      required:
+        - productId
+        - soldOutAt
+      properties:
+        productId:
+          $ref: "#/components/schemas/ProductId"
+        soldOutAt:
+          type: string
+          format: date-time
+          description: Date and time when the product was sold out.
+          example: "2026-09-11T10:15:30-03:00"
+
+    OrderPaidPayload:
+      type: object
+      required:
+        - orderId
+        - customerId
+        - paidAt
+        - items
+      properties:
+        orderId:
+          $ref: "#/components/schemas/OrderId"
+        customerId:
+          type: string
+          format: uuid
+          description: ID of the customer who owns the order.
+          example: "fcc2897f-70a8-4c87-a4d0-26a4e0bb36dc"
+        paidAt:
+          type: string
+          format: date-time
+          description: Date and time when payment was confirmed.
+          example: "2026-09-11T10:15:30-03:00"
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/OrderItemSnapshot"
+
+    OrderItemSnapshot:
+      type: object
+      required:
+        - orderItemId
+        - productId
+        - productName
+        - price
+        - quantity
+        - totalAmount
+      properties:
+        id:
+          type: string
+          minLength: 1
+          description: ID of the order item.
+          example: "557184362231839"
+        orderItemId:
+          type: string
+          minLength: 1
+          description: >-
+            Required by the consumers' validation. The producer currently
+            fills it with the ID of the order the item belongs to.
+          example: "557184362231839"
+        productId:
+          $ref: "#/components/schemas/ProductId"
+        productName:
+          type: string
+          minLength: 1
+          example: Smartphone XYZ
+        price:
+          $ref: "#/components/schemas/PositiveMoney"
+        quantity:
+          type: integer
+          minimum: 1
+          example: 2
+        totalAmount:
+          $ref: "#/components/schemas/PositiveMoney"
+
+    OrderPlacedPayload:
+      type: object
+      required:
+        - orderId
+        - customerId
+        - placedAt
+        - totalAmount
+        - items
+        - payment
+        - shipping
+        - billing
+      properties:
+        orderId:
+          $ref: "#/components/schemas/OrderId"
+        customerId:
+          $ref: "#/components/schemas/CustomerId"
+        placedAt:
+          type: string
+          format: date-time
+          description: Date and time when the order was placed.
+          example: "2026-09-11T10:15:30-03:00"
+        totalAmount:
+          $ref: "#/components/schemas/PositiveMoney"
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/OrderItemSnapshot"
+        payment:
+          $ref: "#/components/schemas/PaymentSnapshot"
+        shipping:
+          $ref: "#/components/schemas/ShippingSnapshot"
+        billing:
+          $ref: "#/components/schemas/BillingSnapshot"
+
+    OrderReadyPayload:
+      type: object
+      required:
+        - orderId
+        - customerId
+        - readyAt
+      properties:
+        orderId:
+          $ref: "#/components/schemas/OrderId"
+        customerId:
+          $ref: "#/components/schemas/CustomerId"
+        readyAt:
+          type: string
+          format: date-time
+          description: Date and time when the order became ready.
+          example: "2026-09-11T10:16:00-03:00"
+
+    OrderCanceledPayload:
+      type: object
+      required:
+        - orderId
+        - customerId
+        - canceledAt
+      properties:
+        orderId:
+          $ref: "#/components/schemas/OrderId"
+        customerId:
+          $ref: "#/components/schemas/CustomerId"
+        canceledAt:
+          type: string
+          format: date-time
+          description: Date and time when the order was canceled.
+          example: "2026-09-11T10:16:00-03:00"
+
+    PaymentSnapshot:
+      type: object
+      required:
+        - method
+      properties:
+        method:
+          $ref: "#/components/schemas/PaymentMethod"
+        creditCardId:
+          type: string
+          format: uuid
+          description: Required when method is CREDIT_CARD.
+
+    PaymentMethod:
+      type: string
+      enum:
+        - CREDIT_CARD
+        - GATEWAY_BALANCE
+
+    ShippingSnapshot:
+      type: object
+      required:
+        - cost
+        - expectedDate
+        - recipient
+        - address
+      properties:
+        cost:
+          $ref: "#/components/schemas/Money"
+        expectedDate:
+          type: string
+          format: date
+          example: "2026-09-15"
+        recipient:
+          $ref: "#/components/schemas/RecipientSnapshot"
+        address:
+          $ref: "#/components/schemas/AddressSnapshot"
+
+    RecipientSnapshot:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - document
+        - phone
+      properties:
+        firstName:
+          type: string
+          minLength: 1
+          example: Alex
+        lastName:
+          type: string
+          minLength: 1
+          example: Silva
+        document:
+          type: string
+          minLength: 1
+          example: "12345678901"
+        phone:
+          type: string
+          minLength: 1
+          example: "+5511999999999"
+
+    BillingSnapshot:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - document
+        - email
+        - phone
+        - address
+      properties:
+        firstName:
+          type: string
+          minLength: 1
+          example: Alex
+        lastName:
+          type: string
+          minLength: 1
+          example: Silva
+        document:
+          type: string
+          minLength: 1
+          example: "12345678901"
+        email:
+          type: string
+          format: email
+          example: alex@example.com
+        phone:
+          type: string
+          minLength: 1
+          example: "+5511999999999"
+        address:
+          $ref: "#/components/schemas/AddressSnapshot"
+
+    AddressSnapshot:
+      type: object
+      required:
+        - street
+        - number
+        - neighborhood
+        - city
+        - state
+        - zipCode
+      properties:
+        street:
+          type: string
+          minLength: 1
+          example: Avenida Paulista
+        number:
+          type: string
+          minLength: 1
+          example: "1000"
+        complement:
+          type: string
+          example: Apartment 10
+        neighborhood:
+          type: string
+          minLength: 1
+          example: Bela Vista
+        city:
+          type: string
+          minLength: 1
+          example: São Paulo
+        state:
+          type: string
+          minLength: 1
+          example: SP
+        zipCode:
+          type: string
+          minLength: 5
+          maxLength: 5
+          example: "01310"
+
+    InvoicePaidPayload:
+      type: object
+      required:
+        - invoiceId
+        - orderId
+        - customerId
+        - paidAt
+      properties:
+        invoiceId:
+          $ref: "#/components/schemas/InvoiceId"
+        orderId:
+          $ref: "#/components/schemas/OrderId"
+        customerId:
+          $ref: "#/components/schemas/CustomerId"
+        paidAt:
+          type: string
+          format: date-time
+          example: "2026-09-11T10:16:00-03:00"
+
+    InvoiceIssuedPayload:
+      type: object
+      required:
+        - invoiceId
+        - orderId
+        - customerId
+        - issuedAt
+      properties:
+        invoiceId:
+          $ref: "#/components/schemas/InvoiceId"
+        orderId:
+          $ref: "#/components/schemas/OrderId"
+        customerId:
+          $ref: "#/components/schemas/CustomerId"
+        issuedAt:
+          type: string
+          format: date-time
+          example: "2026-09-11T10:15:45-03:00"
+
+    InvoiceCanceledPayload:
+      type: object
+      required:
+        - invoiceId
+        - orderId
+        - customerId
+        - canceledAt
+      properties:
+        invoiceId:
+          $ref: "#/components/schemas/InvoiceId"
+        orderId:
+          $ref: "#/components/schemas/OrderId"
+        customerId:
+          $ref: "#/components/schemas/CustomerId"
+        canceledAt:
+          type: string
+          format: date-time
+          example: "2026-09-11T10:16:00-03:00"
+
+    IssueInvoicePayload:
+      type: object
+      required:
+        - orderId
+        - customerId
+        - placedAt
+        - totalAmount
+        - items
+        - payment
+        - shipping
+        - billing
+      properties:
+        orderId:
+          $ref: "#/components/schemas/OrderId"
+        customerId:
+          $ref: "#/components/schemas/CustomerId"
+        placedAt:
+          type: string
+          format: date-time
+          description: Date and time when the order was placed.
+          example: "2026-09-11T10:15:30-03:00"
+        totalAmount:
+          $ref: "#/components/schemas/PositiveMoney"
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/OrderItemSnapshot"
+        payment:
+          $ref: "#/components/schemas/PaymentSnapshot"
+        shipping:
+          $ref: "#/components/schemas/ShippingSnapshot"
+        billing:
+          $ref: "#/components/schemas/BillingSnapshot"
+
+    CancelInvoicePayload:
+      type: object
+      required:
+        - orderId
+      properties:
+        orderId:
+          $ref: "#/components/schemas/OrderId"
+
+    ReserveStockPayload:
+      type: object
+      required:
+        - orderId
+        - items
+      properties:
+        orderId:
+          $ref: "#/components/schemas/OrderId"
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/StockItem"
+
+    StockItem:
+      type: object
+      required:
+        - productId
+        - quantity
+      properties:
+        productId:
+          $ref: "#/components/schemas/ProductId"
+        quantity:
+          type: integer
+          minimum: 1
+          example: 2
+
+    SendEmailPayload:
+      type: object
+      required:
+        - recipient
+        - templateId
+      properties:
+        recipient:
+          type: object
+          required:
+            - email
+            - name
+          properties:
+            email:
+              type: string
+              format: email
+              maxLength: 254
+              description: Validated before sending; an invalid address sends the command to the dead-letter topic.
+            name:
+              type: string
+              minLength: 1
+              description: Display name of the recipient. Also exposed to the template as recipient.name.
+        templateId:
+          type: string
+          format: uuid
+          description: Id of the email template, as returned by the email-templates REST API.
+        variables:
+          type: object
+          additionalProperties: true
+          description: >-
+            Values available to the Thymeleaf template as ${name}. The recipient
+            is always available as ${recipient.name} and ${recipient.email} and
+            cannot be overridden.
+
+    InvoicePaidReplyPayload:
+      type: object
+      required:
+        - invoiceId
+        - orderId
+        - paidAt
+      properties:
+        invoiceId:
+          $ref: "#/components/schemas/InvoiceId"
+        orderId:
+          $ref: "#/components/schemas/OrderId"
+        paidAt:
+          type: string
+          format: date-time
+          example: "2026-09-11T10:16:00-03:00"
+
+    InvoiceCanceledReplyPayload:
+      type: object
+      required:
+        - invoiceId
+        - orderId
+        - canceledAt
+      properties:
+        invoiceId:
+          $ref: "#/components/schemas/InvoiceId"
+        orderId:
+          $ref: "#/components/schemas/OrderId"
+        canceledAt:
+          type: string
+          format: date-time
+          example: "2026-09-11T10:16:00-03:00"
+
+    StockReservationConfirmedReplyPayload:
+      type: object
+      required:
+        - reservationId
+        - orderId
+        - confirmedAt
+      properties:
+        reservationId:
+          $ref: "#/components/schemas/StockReservationId"
+        orderId:
+          $ref: "#/components/schemas/OrderId"
+        confirmedAt:
+          type: string
+          format: date-time
+          description: Date and time when the stock reservation was confirmed.
+          example: "2026-09-11T10:15:31-03:00"
+
+    StockReservationRejectedReplyPayload:
+      type: object
+      required:
+        - reservationId
+        - orderId
+        - rejectedAt
+      properties:
+        reservationId:
+          $ref: "#/components/schemas/StockReservationId"
+        orderId:
+          $ref: "#/components/schemas/OrderId"
+        rejectedAt:
+          type: string
+          format: date-time
+          description: Date and time when the stock reservation was rejected.
+          example: "2026-09-11T10:15:31-03:00"
+
+    CorrelationId:
+      type: string
+      minLength: 1
+      example: "018ec6f7-6f47-7d5a-a337-9dbcc12e7176"
+
+    ProductId:
+      type: string
+      format: uuid
+      description: ID of the product.
+      example: "fcc2897f-70a8-4c87-a4d0-26a4e0bb36dc"
+
+    CustomerId:
+      type: string
+      format: uuid
+      description: ID of the customer.
+      example: "3b4f8b1a-7c38-4b49-aa9e-04aa705bf76f"
+
+    OrderId:
+      type: string
+      minLength: 1
+      description: ID of the order.
+      example: "557184362231839"
+
+    InvoiceId:
+      type: string
+      format: uuid
+      description: ID of the invoice.
+      example: "69949fd9-e182-4c05-a299-4d479821d13d"
+
+    StockReservationId:
+      type: string
+      format: uuid
+      description: ID of the stock reservation.
+      example: "4427a30b-bbb4-4d31-a7aa-3d91931e53d2"
+
+    Money:
+      type: number
+      format: double
+      minimum: 0
+      example: 24.99
+
+    PositiveMoney:
+      type: number
+      format: double
+      exclusiveMinimum: 0
+      example: 24.99
+
+  messageTraits:
+    KafkaProductKey:
+      bindings:
+        kafka:
+          key:
+            $ref: "#/components/schemas/ProductId"
+          bindingVersion: "0.5.0"
+
+    KafkaOrderKey:
+      bindings:
+        kafka:
+          key:
+            $ref: "#/components/schemas/OrderId"
+          bindingVersion: "0.5.0"
+
+    KafkaInvoiceKey:
+      bindings:
+        kafka:
+          key:
+            $ref: "#/components/schemas/InvoiceId"
+          bindingVersion: "0.5.0"

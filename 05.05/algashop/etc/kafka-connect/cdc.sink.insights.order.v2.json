@@ -1,0 +1,15 @@
+{
+  "name": "cdc.sink.insights.order.v2",
+  "connector.class": "io.debezium.connector.jdbc.JdbcSinkConnector",
+  "tasks.max": "1",
+  "connection.url": "${ssm::/config/algashop/kafka-connect/insights-database/connection-url}",
+  "connection.username": "${secretsmanager:/secret/algashop/kafka-connect/insights-database:username}",
+  "connection.password": "${secretsmanager:/secret/algashop/kafka-connect/insights-database:password}",
+  "topics": "cdc.ordering.v2.public.order",
+  "field.exclude.list": "shipping_address_city,shipping_address_state",
+  "collection.name.format": "order",
+  "insert.mode": "upsert",
+  "primary.key.mode": "record_key",
+  "schema.evolution": "none",
+  "delete.enabled": "true"
+}

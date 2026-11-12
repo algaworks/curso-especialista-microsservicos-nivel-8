@@ -1,0 +1,3 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://algashop-insights-postgres:5432/insights

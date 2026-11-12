@@ -1,0 +1,15 @@
+# Substitui tudo que esta no application.yml do src/main/resources
+# Permite usar outro perfil além de test para executar os testes usando a variável SPRING_PROFILES_ACTIVE
+# Reaproveita dados do perfil local
+# Evite usar @ActiveProfiles, pois ele força um perfil e ignora a variável SPRING_PROFILES_ACTIVE
+spring:
+  profiles:
+    active: test #Default
+    group:
+      test:
+        - base
+        - test-env
+      ci:
+        - base
+        - test-env
+        - ci-env

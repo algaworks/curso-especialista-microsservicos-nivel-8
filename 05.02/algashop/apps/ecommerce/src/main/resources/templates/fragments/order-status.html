@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:switch="${order.status}">
+    <th:block th:case='DRAFT'>
+        <span class="label label-default">Draft</span>
+    </th:block>
+    <th:block th:case='PLACED'>
+        <span class="label label-info">Placed</span>
+    </th:block>
+    <th:block th:case='PAID'>
+        <span class="label label-success">Paid</span>
+    </th:block>
+    <th:block th:case='READY'>
+        <span class="label label-success">Ready</span>
+    </th:block>
+    <th:block th:case='CANCELED'>
+        <span class="label label-danger">Canceled</span>
+    </th:block>
+</div>
+</body>
+</html>

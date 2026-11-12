@@ -1,0 +1,52 @@
+package com.algaworks.algashop.ordering.infrastructure.adapters.out.persistence.order.saga;
+
+import com.algaworks.algashop.ordering.core.application.order.saga.PlaceOrderSaga;
+import com.algaworks.algashop.ordering.core.domain.model.order.OrderId;
+import com.algaworks.algashop.ordering.core.ports.out.order.saga.ForStoringPlaceOrderSagas;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+import java.util.UUID;
+
+@Component
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class PlaceOrderSagasPersistenceProvider implements ForStoringPlaceOrderSagas {
+
+	private final PlaceOrderSagaPersistenceEntityRepository repository;
+
+	@Override
+	public Optional<PlaceOrderSaga> ofId(UUID sagaId) {
+		return repository.findById(sagaId).map(this::toSaga);
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public void add(PlaceOrderSaga saga) {
+		repository.saveAndFlush(toEntity(saga));
+	}
+
+
+	private PlaceOrderSaga toSaga(PlaceOrderSagaPersistenceEntity entity) {
+		return PlaceOrderSaga.existing(
+				entity.getSagaId(),
+				new OrderId(entity.getAggregateId()),
+				entity.getStatus(),
+				entity.getStep(),
+				entity.getFailure(),
+				entity.getVersion());
+	}
+
+	private PlaceOrderSagaPersistenceEntity toEntity(PlaceOrderSaga saga) {
+		PlaceOrderSagaPersistenceEntity entity = new PlaceOrderSagaPersistenceEntity();
+		entity.setSagaId(saga.sagaId());
+		entity.setAggregateId(saga.orderId().toString());
+		entity.setStatus(saga.status());
+		entity.setStep(saga.step());
+		entity.setVersion(saga.version());
+		entity.setFailure(saga.failure());
+		return entity;
+	}
+}
